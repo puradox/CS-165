@@ -7,9 +7,9 @@ The team consists of [Sam Balana](https://github.com/puradox) and
 
 ## Project Listing
 
-Project | Description | Progress
---------------------------------
-Project 1 | Selection of k largest | In progress
-Project 2 | TBD | Not started yet
-Project 3 | TBD | Not started yet
-Project 4 | TBD | Not started yet
+| Project   | Description            | Progress        |
+| --------- | ---------------------- | --------------- |
+| Project 1 | Selection of k largest | In progress     |
+| Project 2 | TBD                    | Not started yet |
+| Project 3 | TBD                    | Not started yet |
+| Project 4 | TBD                    | Not started yet |
