@@ -5,7 +5,7 @@
 #define MAXN 10000
 #define MAXK 100
 
-main()
+int main()
 {
     int N[2] = {100, 10000};
     int K[2] = {10, 40};
