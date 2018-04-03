@@ -5,7 +5,7 @@
 // support O(k) insertions in the worst case.
 struct node
 {
-  uint index;
+  unsigned short index;
   struct node *next;
 };
 
