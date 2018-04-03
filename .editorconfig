@@ -1,0 +1,21 @@
+# http://editorconfig.org
+
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# 4 spaces for C/C++ files
+[*.{c,cpp,h,hpp}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+# 2 spaces for Markdown documentation
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
