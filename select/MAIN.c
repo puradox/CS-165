@@ -25,13 +25,13 @@ int main()
             if (flag == 0)
             {
                 printf(" *** flagged error at loop=%d\n", loop);
-                return (0);
+                return 0;
             }
             ct = COMPARE(-1, k, Best);
             if (ct <= 0)
             {
                 printf(" *** error at loop=%d\n", loop);
-                return (0);
+                return 0;
             }
             if (ct > biggest)
                 biggest = ct;
