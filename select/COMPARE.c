@@ -106,8 +106,24 @@ double dshrandom(long input)
     static long r = 2836;   /* m mod a */
     long lo, hi, test;
 
+    // Set seed
     if (input > 0)
+    {
         seed = input;
+        return 0;
+    }
+
+    // Reset seed to default
+    if (input < 0)
+    {
+        seed = 3125;
+        a = 16807;
+        m = 2147483647;
+        q = 127773; /* m div a */
+        r = 2836;   /* m mod a */
+        return 0;
+    }
+
     hi = seed / q;
     lo = seed - (hi * q);
     test = a * lo - r * hi;

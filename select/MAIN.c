@@ -5,7 +5,7 @@
 #define MAXN 10000
 #define MAXK 100
 
-int main()
+int run()
 {
     int N[2] = {100, 10000};
     int K[2] = {10, 40};
@@ -25,13 +25,13 @@ int main()
             if (flag == 0)
             {
                 printf(" *** flagged error at loop=%d\n", loop);
-                return 0;
+                return 1;
             }
             ct = COMPARE(-1, k, Best);
             if (ct <= 0)
             {
                 printf(" *** error at loop=%d\n", loop);
-                return 0;
+                return 1;
             }
             if (ct > biggest)
                 biggest = ct;
@@ -41,4 +41,24 @@ int main()
                N[round], K[round], biggest, (1.0 * total) / 1000);
         fflush(stdout);
     }
+    return 0;
+}
+
+int main()
+{
+    /*
+    // Run the algorithm muliple times with different seeds for the random
+    // number generator.
+    for (uint16 i = 0; i < 100; i++)
+    {
+        dshrandom(-1);
+        dshrandom(i);
+
+        int result = run();
+
+        if (result != 0)
+            return result;
+    }
+    */
+    return run();
 }
