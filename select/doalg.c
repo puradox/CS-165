@@ -52,7 +52,6 @@ void quickselect(uint16 arr[], uint16 start, uint16 end, uint16 k)
     uint16 pivot = partition(arr, start, end);
 
     // Check the pivot position
-    printf("Start: %d\nPivot: %d\nEnd: %d\n", start, pivot, end);
     if (k < pivot)
     {
         quickselect(arr, start, pivot - 1, k);
@@ -60,6 +59,58 @@ void quickselect(uint16 arr[], uint16 start, uint16 end, uint16 k)
     else if (k > pivot)
     {
         quickselect(arr, pivot + 1, end, k);
+    }
+}
+
+// siftDown enforces the max-heap property by starting at the specified node and
+// propogating down the tree, swapping elements until that branch looks correct.
+void siftDown(uint16 arr[], uint16 start, uint16 end)
+{
+    uint16 leftChild = 2 * start + 1;
+    uint16 rightChild = 2 * start + 2;
+    uint16 swapIndex = start;
+
+    if (leftChild > end)
+        return;
+
+    // Compare left and right children to the parent to find the maximum.
+    if (COMPARE(arr[leftChild], arr[swapIndex]) == 2) // left < swap
+    {
+        swapIndex = leftChild;
+    }
+    if (rightChild <= end && COMPARE(arr[rightChild], arr[swapIndex]) == 2) // right < swap
+    {
+        swapIndex = rightChild;
+    }
+
+    if (swapIndex == start)
+        return; // the parent is already the max; holds the heap property
+
+    swap(arr, start, swapIndex);
+    siftDown(arr, swapIndex, end);
+}
+
+// heapify creates a max heap in-place with the given array.
+// Brotip: If end is equal to the size of the array, the entire array is
+// converted a heap.
+void heapify(uint16 arr[], uint16 end)
+{
+    // Execute siftDown on every parent
+    for (int16 start = (end - 1) / 2; start >= 0; start--)
+    {
+        siftDown(arr, start, end);
+    }
+}
+
+// heapsort sorts the array in descending order in-place.
+void heapSort(uint16 arr[], uint16 size)
+{
+    heapify(arr, size - 1);
+
+    for (int16 end = size - 1; end > 0; end--)
+    {
+        swap(arr, 0, end);
+        siftDown(arr, 0, end - 1);
     }
 }
 
@@ -72,8 +123,6 @@ void quickselect(uint16 arr[], uint16 start, uint16 end, uint16 k)
 //   1  <= k <= 100
 int doalg(int n, int k, int Best[])
 {
-    printf("n=%d, k=%d\n", n, k);
-
     // Since we don't have access to the actual values, we need to have
     // some sort of representation for them. I will choose to represent
     // them by their indices.
@@ -86,13 +135,19 @@ int doalg(int n, int k, int Best[])
     // Partially sort the array so that the 0 through k indices are the
     // k highest.
     quickselect(elements, 0, n - 1, k);
+    int selectComps = -COMPARE(-1, k, Best);
 
     // Sort arr[0:k] in descending order.
-    // TODO(Sam)
+    heapSort(elements, k);
+    int sortComps = -(selectComps + COMPARE(-1, k, Best));
+    int comps = selectComps + sortComps;
+    printf("Comparisons: select (%d) + sort (%d) = %d\n", selectComps, sortComps, comps);
 
     // Copy the k largest elements to the array of results.
-    // TODO(Sam)
-    Best[0] = elements[k-7];
+    for (uint16 i = 0; i < k; i++)
+    {
+        Best[i] = elements[i];
+    }
 
     free(elements);
     return 1; // Return with errors for the time being.

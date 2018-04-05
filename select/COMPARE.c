@@ -69,12 +69,14 @@ int COMPARE(int arg1, int arg2, ...)
         {
             if (Best[i] < 1 || Best[i] > size || number[Best[i]] != size - i)
             {
+                /*
                 printf("******* ERROR: COMPARE(-1,k,Best[]) -- Best[%d] = %d", i, Best[i]);
                 if (Best[i] < 1 || Best[i] > size)
                     printf(" out of range **********\n");
                 else
                     printf(" bad value **********\n");
-                return (-1000);
+                */
+                return (-comp);
             }
         }
         return (comp);
