@@ -8,27 +8,26 @@ typedef signed short int16;    // –32,768 to 32,767
 typedef unsigned short uint16; // 0 to 65,535
 
 // Helper functions
-int randIndex(uint16); // returns a random index for an array of given size
-void swap(uint16*, uint16, uint16); // swaps two elements in an array
-uint16 max(uint16, uint16); // returns the max argument
-void debug(uint16*, uint16); // prints out the array
+int randIndex(uint16);                // returns a random index for an array of given size
+void swap(uint16[], uint16, uint16);  // swaps two elements in an array
+uint16 max(uint16, uint16);           // returns the max argument
+void debug(uint16[], uint16, uint16); // prints out the array from start to end
 
 // partition partially sorts the array within the given range around a ranomly
 // generated pivot. The array will partially sorted in ascending order by the
 // pivot value.
-uint16 partition(uint16* arr, uint16 start, uint16 end)
+uint16 partition(uint16 arr[], uint16 start, uint16 end)
 {
     // Select the pivot and move it to the end.
     uint16 size = end - start + 1;
     uint16 pivot = randIndex(size) + start;
     swap(arr, pivot, end);
-    pivot = size-1;
 
     // Find a new place for the pivot by partially sorting.
-    uint16 cursor = 0;
+    uint16 cursor = start;
     for (uint16 i = start; i < end; i++)
     {
-        if (COMPARE(arr[i], arr[pivot]) == 2) // arr[i] > arr[pivot]
+        if (COMPARE(arr[i], arr[end]) == 1) // arr[i] > pivot
         {
             swap(arr, cursor, i);
             cursor++;
@@ -36,16 +35,16 @@ uint16 partition(uint16* arr, uint16 start, uint16 end)
     }
 
     // Put the pivot in its correct place.
-    swap(arr, cursor, pivot);
+    swap(arr, cursor, end);
 
     // Return the absolute position of the pivot.
-    return cursor + start;
+    return cursor;
 }
 
 // quickselect runs a modified version of the QuickSelect algorithm to
 // partially sort the array specified in ascending order.
 // From index 0 to k, you will find the k largest elements of in the array.
-void quickselect(uint16 *arr, uint16 start, uint16 end, uint16 k)
+void quickselect(uint16 arr[], uint16 start, uint16 end, uint16 k)
 {
     if (start == end)
         return;
@@ -84,12 +83,19 @@ int doalg(int n, int k, int Best[])
         elements[i] = i + 1;
     }
 
-    debug(elements, n);
-    quickselect(elements, 0, n-1, k);
-    debug(elements, k);
+    // Partially sort the array so that the 0 through k indices are the
+    // k highest.
+    quickselect(elements, 0, n - 1, k);
+
+    // Sort arr[0:k] in descending order.
+    // TODO(Sam)
+
+    // Copy the k largest elements to the array of results.
+    // TODO(Sam)
+    Best[0] = elements[k-7];
 
     free(elements);
-    return 0; // Return with no errors for the time being.
+    return 1; // Return with errors for the time being.
 }
 
 //
@@ -104,7 +110,7 @@ int randIndex(uint16 size)
 }
 
 // swap modifies the given array by swapping two elements in place.
-void swap(uint16 *arr, uint16 a, uint16 b)
+void swap(uint16 arr[], uint16 a, uint16 b)
 {
     uint16 prevA = arr[a];
     arr[a] = arr[b];
@@ -118,10 +124,10 @@ uint16 max(uint16 a, uint16 b)
 }
 
 // debug prints out the array specified
-void debug(uint16 *arr, uint16 size)
+void debug(uint16 arr[], uint16 start, uint16 end)
 {
     printf("Array: ");
-    for (uint16 i = 0; i < size; i++)
+    for (uint16 i = start; i <= end; i++)
     {
         printf("%d ", arr[i]);
     }
@@ -134,7 +140,7 @@ void debug(uint16 *arr, uint16 size)
 
 // shift modifies the given array to move the specified element to the left
 // or right a number of times. This shifts the rest of the elements around.
-void shift(uint16 *arr, uint16 pos, int shiftAmount)
+void shift(uint16 arr[], uint16 pos, int shiftAmount)
 {
     uint16 element = arr[pos];
     if (shiftAmount > 0)
