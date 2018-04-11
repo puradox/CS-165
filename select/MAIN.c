@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "COMPARE.c"
+#include "COMPARE.h"
 #include "doalg.c"
 
 #define MAXN 10000
@@ -49,7 +49,7 @@ int main()
     /*
     // Run the algorithm muliple times with different seeds for the random
     // number generator.
-    for (uint16 i = 0; i < 100; i++)
+    for (uint16_t i = 0; i < 100; i++)
     {
         dshrandom(-1);
         dshrandom(i);

@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdarg.h>
-
-#define COMPARELIMIT 10000
-#define KLIMIT 100
-
-double dshrandom(long);
+#include "COMPARE.h"
 
 //
 //	Comparisons to determine the biggest "k" array elements
