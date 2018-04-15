@@ -24,8 +24,8 @@ int doalg(int n, int k, int Best[])
 
     // Sort the k maximum values
     maxHeapSelect(elements, 0, (uint16_t)(n - 1), (uint16_t)(n - k));
-    printf("Comparisons: %d\n", getComps());
-    resetComps();
+    //printf("Comparisons: %d\n", getComps());
+    //resetComps();
 
     // Copy results over
     for (int i = n - 1; i >= n - k; i--)
