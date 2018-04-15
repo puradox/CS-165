@@ -78,3 +78,25 @@ uint16_t** split(uint16_t arr[], uint16_t size, uint16_t splits)
 
     return results;
 }
+
+static int lastComps = 0;
+static int totalComps = 0;
+
+int getComps(void)
+{
+    int recentComps = COMPARE(-1, -1) - lastComps;
+    lastComps = recentComps;
+    totalComps += recentComps;
+    return recentComps;
+}
+
+int allComps(void)
+{
+    return totalComps;
+}
+
+void resetComps(void)
+{
+    lastComps = 0;
+    totalComps = 0;
+}

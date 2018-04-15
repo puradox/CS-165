@@ -1,8 +1,8 @@
+#include <assert.h>
 #include <stdio.h>
 #include "COMPARE.h"
 #include "doalg.c"
 
-#define MAXN 10000
 #define MAXK 100
 
 int run()

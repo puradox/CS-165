@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "COMPARE.h"
 
+//#define DEBUG
+
 // rand returns a random index for an array of the specified size.
 // This is used to get the random pivot for use in QuickSelect.
 uint16_t randIndex(uint16_t size);
@@ -25,5 +27,10 @@ void debug(uint16_t arr[], uint16_t start, uint16_t end);
 // shift modifies the given array to move the specified element to the left
 // or right a number of times. This shifts the rest of the elements around.
 void shift(uint16_t arr[], uint16_t pos, int shiftAmount);
+
+// For finding # of comparisons
+int getComps(void);
+int allComps(void);
+void resetComps(void);
 
 #endif

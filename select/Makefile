@@ -1,7 +1,7 @@
 TARGET = project
-LIBS = -g -lm
+LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -Wextra -Weverything
 
 HEADERS = COMPARE.h heap.h util.h
 OBJECTS = COMPARE.o heap.o util.o MAIN.c
@@ -13,7 +13,7 @@ all: default
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS) doalg.c
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@
+	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@
 
 clean:
 	-rm -f *.o

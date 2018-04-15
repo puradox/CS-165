@@ -20,11 +20,11 @@ int8_t gt(uint16_t a, uint16_t b)
     return a > b;
 }
 
-void siftDown(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
+void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompFunc compare)
 {
-    uint16_t leftChild = 2 * start + 1;
-    uint16_t rightChild = 2 * start + 2;
-    uint16_t swapIndex = start;
+    uint16_t leftChild = 2 * (curr - start) + 1 + start;
+    uint16_t rightChild = 2 * (curr - start) + 2 + start;
+    uint16_t swapIndex = curr;
 
     if (leftChild > end)
         return;
@@ -39,19 +39,19 @@ void siftDown(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
         swapIndex = rightChild;
     }
 
-    if (swapIndex == start)
+    if (swapIndex == curr)
         return; // the parent is already the max; holds the heap property
 
-    swap(arr, start, swapIndex);
-    siftDown(arr, swapIndex, end, compare);
+    swap(arr, curr, swapIndex);
+    siftDown(arr, start, swapIndex, end, compare);
 }
 
 void heapify(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
 {
     // Execute siftDown on every parent
-    for (int16_t i = start + (end - 1) / 2; i >= start; i--)
+    for (int16_t i = (int16_t)(start + (end - start - 1) / 2); i >= start; i--)
     {
-        siftDown(arr, i, end, compare);
+        siftDown(arr, start, i, end, compare);
     }
 }
 
@@ -62,32 +62,41 @@ void heapSort(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
     for (int16_t i = end; i > start; i--)
     {
         swap(arr, start, i);
-        siftDown(arr, start, i - 1, compare);
+        siftDown(arr, start, start, i - 1, compare);
     }
-}
-
-void maxHeapSort(uint16_t arr[], uint16_t size)
-{
-    heapSort(arr, 0, size - 1, compareLt);
 }
 
 void minHeapSort(uint16_t arr[], uint16_t size)
 {
-    heapSort(arr, 0, size - 1, compareGt);
+    #ifdef DEBUG
+    heapSort(arr, 0, size - 1, lt);
+    #else
+    heapSort(arr, 0, size - 1, compareLt);
+    #endif
 }
 
-int16_t heapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+uint16_t minHeapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 {
-    if (k < 0 || k > end - start)
-        return -1;
+    assert(start < end);
+    assert(start < k);
+    assert(k <= end + 1);
 
-    heapify(arr, start, end, compareGt);
+    #ifdef DEBUG
+    heapify(arr, start, end, lt);
+    #else
+    heapify(arr, start, end, compareLt);
+    #endif
 
-    for (int16_t i = end; i >= start + k - 1; i--)
+    for (int16_t i = end; i >= k; i--)
     {
         swap(arr, start, i);
-        siftDown(arr, start, i - 1, compareGt);
+
+        #ifdef DEBUG
+        siftDown(arr, start, start, i - 1, lt);
+        #else
+        siftDown(arr, start, start, i - 1, compareLt);
+        #endif
     }
 
-    return arr[start + k - 1];
+    return start;
 }

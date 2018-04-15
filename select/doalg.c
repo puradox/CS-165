@@ -2,15 +2,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 
 #include "heap.h"
 #include "util.h"
+
+uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot);
+uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k);
+int doalg(int n, int k, int Best[]);
 
 // partition partially sorts the array within the given range around a ranomly
 // generated pivot. The array will partially sorted in ascending order by the
 // pivot value.
 uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot)
 {
+    assert(start < end);
+    assert(start <= pivot);
+    assert(pivot <= end);
+
     // Move the pivot to the end temporarily so we can find it's new position.
     swap(arr, pivot, end);
 
@@ -18,7 +27,11 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot
     uint16_t cursor = start;
     for (uint16_t i = start; i < end; i++)
     {
-        if (COMPARE(arr[i], arr[end]) == 1) // arr[i] > pivot
+        #ifdef DEBUG
+        if (gt(arr[i], arr[end]))
+        #else
+        if (compareGt(arr[i], arr[end]))
+        #endif
         {
             swap(arr, cursor, i);
             cursor++;
@@ -32,48 +45,61 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot
     return cursor;
 }
 
+const static uint16_t SPLIT_SIZE = 5;
+
 // quickselect runs a modified version of the QuickSelect algorithm to
 // partially sort the array specified in ascending order.
 // From index 0 to k, you will find the k largest elements of in the array.
-void quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 {
     if (start == end)
-        return;
+        return k - 1;
 
-    uint16_t size = end - start + 1;
+    assert(start < end);
+    assert(start < k);
+    assert(k <= end + 1);
 
-/*
+    const uint16_t size = end - start + 1;
+
     if (size < 10)
-    {
-        //heapSelect(arr, start, end, k);
-        heapSort(arr, start, end, compareGt);
-        return;
-    }
+        return minHeapSelect(arr, start, end, k);
 
-    uint16_t splitAmount = 5;
-    uint16_t splitK = splitAmount / 2 + 1;
-    uint16_t splitSize = size / splitAmount;
+    const uint16_t splitAmount = (uint16_t)(ceil((double)size / (double)SPLIT_SIZE));
+    uint16_t *middles = malloc(sizeof(uint16_t) * (uint16_t)splitAmount);
 
     for (uint16_t split = 0; split < splitAmount; split++)
     {
-        uint16_t startSplit = start + split * splitSize;
-        uint16_t endSplit = min(startSplit + splitSize, end);
-        quickselect(arr, startSplit, endSplit, splitAmount / 2 + 1);
+        const uint16_t splitStart = start + split * SPLIT_SIZE;
+        const uint16_t splitEnd = min(splitStart + SPLIT_SIZE - 1, end);
+        const uint16_t splitSize = splitEnd - splitStart + 1;
+        const uint16_t splitK = (uint16_t)(ceil((double)splitSize / 2.0) + splitStart);
+        const uint16_t splitMedian = quickselect(arr, splitStart, splitEnd, splitK);
+        middles[split] = arr[splitMedian];
     }
-    */
 
-    uint16_t pivotIndex = randIndex(size) + start;
-    uint16_t pivot = partition(arr, start, end, pivotIndex);
+    const uint16_t middlesK = (uint16_t)(ceil((double)splitAmount / 2.0));
+    const uint16_t middlesMedian = quickselect(middles, 0, splitAmount - 1, middlesK);
+    int16_t pivotIndex = -1;
+    for (int16_t i = (int16_t)start; i <= end; i++)
+    {
+        if (arr[i] == middles[middlesMedian])
+        {
+            pivotIndex = i;
+            break;
+        }
+    }
+    assert(pivotIndex != -1);
+    free(middles);
+
+    const uint16_t pivot = partition(arr, start, end, (uint16_t)pivotIndex);
 
     // Check the pivot position
-    if (k < pivot)
-    {
-        quickselect(arr, start, pivot - 1, k);
-    }
-    else if (k > pivot)
-    {
-        quickselect(arr, pivot + 1, end, k);
-    }
+    if (k - 1 < pivot)
+        return quickselect(arr, start, pivot - 1, k);
+    else if (k - 1 > pivot)
+        return quickselect(arr, pivot + 1, end, k);
+
+    return k - 1;
 }
 
 // Performs Quick Select and stores the k largest elements in
@@ -85,32 +111,24 @@ void quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 //   1  <= k <= 100
 int doalg(int n, int k, int Best[])
 {
-    // Since we don't have access to the actual values, we need to have
-    // some sort of representation for them. I will choose to represent
-    // them by their indices.
-    uint16_t *elements = malloc(sizeof(uint16_t) * n);
+    // Represent values by their indices
+    uint16_t *elements = malloc(sizeof(uint16_t) * (uint16_t)n);
     for (uint16_t i = 0; i < n; i++)
-    {
         elements[i] = i + 1;
-    }
 
-    // Partially sort the array so that the 0 through k indices are the
-    // k highest.
-    quickselect(elements, 0, n - 1, k);
-    int selectComps = -COMPARE(-1, k, Best);
+    quickselect(elements, 0, (uint16_t)n - 1, (uint16_t)k);
+    int selectComps = getComps();
 
-    // Sort arr[0:k) in descending order.
-    maxHeapSort(elements, k);
-    int sortComps = -(selectComps + COMPARE(-1, k, Best));
-    int comps = selectComps + sortComps;
-    printf("Comparisons: select (%d) + sort (%d) = %d\n", selectComps, sortComps, comps);
+    // Sort the k maximum values
+    minHeapSort(elements, (uint16_t)k);
+    int sortComps = getComps();
+    printf("Comparisons: select (%d) + sort (%d) = %d\n", selectComps, sortComps, allComps());
+    resetComps();
 
-    // Copy the k largest elements to the array of results.
+    // Copy results over
     for (uint16_t i = 0; i < k; i++)
-    {
         Best[i] = elements[i];
-    }
 
     free(elements);
-    return 1; // Return with errors for the time being.
+    return 1; // No errors
 }

@@ -51,6 +51,8 @@ int COMPARE(int arg1, int arg2, ...)
     }
     if (arg1 == -1)
     {
+        if (arg2 == -1)
+            return comp;
         if (arg2 < 1 || arg2 > size || arg2 > KLIMIT)
         {
             printf("******* ERROR: COMPARE(-1,k,Best[]) -- 'k' out of range ********** k=%d\n", arg2);
@@ -63,14 +65,34 @@ int COMPARE(int arg1, int arg2, ...)
         {
             if (Best[i] < 1 || Best[i] > size || number[Best[i]] != size - i)
             {
-                /*
-                printf("******* ERROR: COMPARE(-1,k,Best[]) -- Best[%d] = %d", i, Best[i]);
                 if (Best[i] < 1 || Best[i] > size)
-                    printf(" out of range **********\n");
+                    printf("******* GOT: number[Best[%d]] = number[%d] = out of range\n", i, Best[i]);
                 else
-                    printf(" bad value **********\n");
-                */
-                return (-comp);
+                    printf("******* GOT: number[Best[%d]] = number[%d] = %d\n", i, Best[i], number[Best[i]]);
+
+                int correctIndex;
+                for (int j = 0; j < sizeof(number) / sizeof(int); j++)
+                {
+                    if (number[j] == size - i)
+                    {
+                        correctIndex = j;
+                        break;
+                    }
+                }
+
+                printf("******* EXPECTED: number[Best[%d]] = number[%d] = %d\n", i, correctIndex, size - i);
+
+                printf("Best: ");
+                for (int j = 0; j < arg2; j++)
+                    printf("%2d ", j);
+                printf("\n      ");
+                for (int j = 0; j < arg2; j++)
+                    printf("%2d ", Best[j]);
+                printf("\n      ");
+                for (int j = 0; j < arg2; j++)
+                    printf("%2d ", number[Best[j]]);
+                printf("\n");
+                return (-1);
             }
         }
         return (comp);
