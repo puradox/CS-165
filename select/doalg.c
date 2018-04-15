@@ -45,7 +45,8 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot
     return cursor;
 }
 
-const static uint16_t SPLIT_SIZE = 5;
+const static uint16_t SIZE_CUTOFF = 10;
+const static uint16_t SPLIT_SIZE = 8;
 
 // quickselect runs a modified version of the QuickSelect algorithm to
 // partially sort the array specified in ascending order.
@@ -61,7 +62,7 @@ uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 
     const uint16_t size = end - start + 1;
 
-    if (size < 10)
+    if (size < SIZE_CUTOFF)
         return minHeapSelect(arr, start, end, k);
 
     const uint16_t splitAmount = (uint16_t)(ceil((double)size / (double)SPLIT_SIZE));
