@@ -21,5 +21,7 @@ The team consists of [Sam Balana](https://github.com/puradox) and
 | pqueue    | 10000     | 40        | 16054                  |
 | heap      | 100       | 10        | 305                    |
 | heap      | 10000     | 40        | 19975                  |
+| minheap   | 100       | 10        | 292                    |
+| minheap   | 10000     | 40        | 12467                  |
 | select    | 100       | 10        | 897                    |
 | select    | 10000     | 40        | 91597                  |
