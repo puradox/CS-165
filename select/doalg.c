@@ -14,7 +14,7 @@ int doalg(int n, int k, int Best[]);
 // partition partially sorts the array within the given range around a ranomly
 // generated pivot. The array will partially sorted in ascending order by the
 // pivot value.
-uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot)
+uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot)
 {
     assert(start < end);
     assert(start <= pivot);

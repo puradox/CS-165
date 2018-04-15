@@ -1,13 +1,14 @@
 #ifndef COMPARE_H
 #define COMPARE_H
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
+#include <stdio.h>
 
 #define COMPARELIMIT 10000
 #define KLIMIT 100
 
-typedef int8_t (*CompFunc)(uint16_t, u_int16_t);
+typedef int8_t (*CompFunc)(uint16_t, uint16_t);
 
 // Comparators
 int8_t lt(uint16_t a, uint16_t b);
