@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "heap.h"
-#include "util.h"
+#include "../common/heap.h"
+#include "../common/util.h"
 
 uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot);
 uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k);

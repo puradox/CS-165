@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "heap.h"
-#include "util.h"
+#include "../common/heap.h"
+#include "../common/util.h"
 
 int doalg(int n, int k, int Best[]);
 
