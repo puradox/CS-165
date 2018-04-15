@@ -84,7 +84,7 @@ static int totalComps = 0;
 
 int getComps(void)
 {
-    int recentComps = COMPARE(-1, -1) - lastComps;
+    int recentComps = COMPARE(-1, -1) - totalComps;
     lastComps = recentComps;
     totalComps += recentComps;
     return recentComps;
