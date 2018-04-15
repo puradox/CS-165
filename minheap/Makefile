@@ -1,7 +1,7 @@
 TARGET = project
 LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Weverything
+CFLAGS = -g -Wall -Wextra
 
 HEADERS = ../common/COMPARE.h ../common/heap.h ../common/util.h
 OBJECTS = ../common/COMPARE.o ../common/heap.o ../common/util.o MAIN.c
