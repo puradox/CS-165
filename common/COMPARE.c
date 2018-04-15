@@ -1,5 +1,25 @@
 #include "COMPARE.h"
 
+int8_t compareLt(uint16_t a, uint16_t b)
+{
+    return (uint8_t)COMPARE(a, b) == 2;
+}
+
+int8_t compareGt(uint16_t a, uint16_t b)
+{
+    return (uint8_t)COMPARE(a, b) == 1;
+}
+
+int8_t lt(uint16_t a, uint16_t b)
+{
+    return a < b;
+}
+
+int8_t gt(uint16_t a, uint16_t b)
+{
+    return a > b;
+}
+
 //
 //	Comparisons to determine the biggest "k" array elements
 //	COMPARE( 0,n ) initializes a random array of length n

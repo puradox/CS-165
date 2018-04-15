@@ -1,25 +1,5 @@
 #include "heap.h"
 
-int8_t compareLt(uint16_t a, uint16_t b)
-{
-    return (uint8_t)COMPARE(a, b) == 2;
-}
-
-int8_t compareGt(uint16_t a, uint16_t b)
-{
-    return (uint8_t)COMPARE(a, b) == 1;
-}
-
-int8_t lt(uint16_t a, uint16_t b)
-{
-    return a < b;
-}
-
-int8_t gt(uint16_t a, uint16_t b)
-{
-    return a > b;
-}
-
 void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompFunc compare)
 {
     assert(start <= end);

@@ -7,7 +7,14 @@
 #define COMPARELIMIT 10000
 #define KLIMIT 100
 
-//
+typedef int8_t (*CompFunc)(uint16_t, u_int16_t);
+
+// Comparators
+int8_t lt(uint16_t a, uint16_t b);
+int8_t gt(uint16_t a, uint16_t b);
+int8_t compareLt(uint16_t a, uint16_t b); // uses COMPARE
+int8_t compareGt(uint16_t a, uint16_t b); // uses COMPARE
+
 //	Comparisons to determine the biggest "k" array elements
 //	COMPARE( 0,n ) initializes a random array of length n
 //				all distinct values
