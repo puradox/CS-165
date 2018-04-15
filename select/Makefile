@@ -18,3 +18,4 @@ $(TARGET): $(OBJECTS) doalg.c
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
+	-rm -rf $(TARGET).dSYM
