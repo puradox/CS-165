@@ -36,6 +36,8 @@ int doalg(int n, int k, int Best[])
     int heapifyComps = getComps();
     printf("Heapify comparisions: %d\n", heapifyComps);
 
+    int siftComps = 0;
+
     for (uint16_t i = k; i < n; i++)
     {
         #ifdef DEBUG
@@ -51,10 +53,14 @@ int doalg(int n, int k, int Best[])
             #else
             siftDown(heap, 0, 0, k - 1, compareLt);
             #endif
-            int siftComps = getComps();
-            printf("Sift comparisions: %d\n", siftComps);
+            siftComps += getComps();
         }
     }
+
+    siftComps -= n - k;
+
+    printf("Sift comparisions: %d\n", siftComps);
+
     printf("Adding to heap comparisons: %d\n", n - k);
 
     // Copy results over
@@ -72,7 +78,10 @@ int doalg(int n, int k, int Best[])
     }
 
     int sortComps = getComps();
-    printf("Sort comps: %d\n\n", sortComps);
+    printf("Sort comps: %d\n", sortComps);
+
+    int totalComps = heapifyComps + siftComps + (n - k) + sortComps;
+    printf("Total comps: %d\n\n", totalComps);
 
     Best[0] = heap[0];
     free(elements);
