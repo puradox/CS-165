@@ -48,6 +48,7 @@ int doalg(int n, int k, int Best[])
         {
             heap[0] = elements[i];
 
+            getComps();
             #ifdef DEBUG
             siftDown(heap, 0, 0, k - 1, lt);
             #else
