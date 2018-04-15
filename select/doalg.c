@@ -8,7 +8,7 @@
 #include "../common/util.h"
 
 uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot);
-uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k);
+uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k);
 int doalg(int n, int k, int Best[]);
 
 // partition partially sorts the array within the given range around a ranomly
@@ -48,10 +48,10 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, u_int16_t pivot
 const static uint16_t SIZE_CUTOFF = 10;
 const static uint16_t SPLIT_SIZE = 8;
 
-// quickselect runs a modified version of the QuickSelect algorithm to
+// dselect runs a modified version of the deterministic selection algorithm to
 // partially sort the array specified in ascending order.
 // From index 0 to k, you will find the k largest elements of in the array.
-uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 {
     if (start == end)
         return k - 1;
@@ -74,12 +74,12 @@ uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
         const uint16_t splitEnd = min(splitStart + SPLIT_SIZE - 1, end);
         const uint16_t splitSize = splitEnd - splitStart + 1;
         const uint16_t splitK = (uint16_t)(ceil((double)splitSize / 2.0) + splitStart);
-        const uint16_t splitMedian = quickselect(arr, splitStart, splitEnd, splitK);
+        const uint16_t splitMedian = dselect(arr, splitStart, splitEnd, splitK);
         middles[split] = arr[splitMedian];
     }
 
     const uint16_t middlesK = (uint16_t)(ceil((double)splitAmount / 2.0));
-    const uint16_t middlesMedian = quickselect(middles, 0, splitAmount - 1, middlesK);
+    const uint16_t middlesMedian = dselect(middles, 0, splitAmount - 1, middlesK);
     int16_t pivotIndex = -1;
     for (int16_t i = (int16_t)start; i <= end; i++)
     {
@@ -96,9 +96,9 @@ uint16_t quickselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 
     // Check the pivot position
     if (k - 1 < pivot)
-        return quickselect(arr, start, pivot - 1, k);
+        return dselect(arr, start, pivot - 1, k);
     else if (k - 1 > pivot)
-        return quickselect(arr, pivot + 1, end, k);
+        return dselect(arr, pivot + 1, end, k);
 
     return k - 1;
 }
@@ -117,7 +117,7 @@ int doalg(int n, int k, int Best[])
     for (uint16_t i = 0; i < n; i++)
         elements[i] = i + 1;
 
-    quickselect(elements, 0, (uint16_t)n - 1, (uint16_t)k);
+    dselect(elements, 0, (uint16_t)n - 1, (uint16_t)k);
     int selectComps = getComps();
 
     // Sort the k maximum values
