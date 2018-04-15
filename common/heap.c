@@ -22,6 +22,10 @@ int8_t gt(uint16_t a, uint16_t b)
 
 void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompFunc compare)
 {
+    assert(start <= end);
+    assert(start <= curr);
+    assert(curr <= end);
+
     uint16_t leftChild = 2 * (curr - start) + 1 + start;
     uint16_t rightChild = 2 * (curr - start) + 2 + start;
     uint16_t swapIndex = curr;
