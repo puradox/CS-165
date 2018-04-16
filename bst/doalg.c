@@ -41,7 +41,7 @@ int doalg(int n, int k, int Best[])
     {
         if (compare(elements[i], Best[k - 1]))
         {
-            node *tree = bstConstruct(Best, 1, k - 1);
+            node *tree = bstConstruct(Best, 0, k - 2);
             bstInsert(tree, elements[i]);
 
             int * newBest = bstToArray(tree, k);
