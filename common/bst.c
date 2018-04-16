@@ -104,6 +104,6 @@ int bstMin(node *tree)
 {
     assert(tree);
     if (tree->left)
-        return bstMin(cursor->left);
-    return cursor->value;
+        return bstMin(tree->left);
+    return tree->value;
 }
