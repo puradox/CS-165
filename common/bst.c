@@ -3,6 +3,7 @@
 
 node *bstConstruct(int arr[], int start, int end)
 {
+  assert(arr != NULL);
   assert(start <= end);
 
   if (start == end)
@@ -36,8 +37,8 @@ node *bstConstruct(int arr[], int start, int end)
     node *rootNode = malloc(sizeof(node));
 
     rootNode->value = root;
-    rootNode->left  = bstConstruct(arr, start, currentPos);
-    rootNode->right = bstConstruct(arr, currentPos, end);
+    rootNode->left  = bstConstruct(arr, start, currentPos - 1);
+    rootNode->right = bstConstruct(arr, currentPos + 1, end);
 
     return rootNode;
   }
@@ -71,6 +72,8 @@ void bstInsert(node *tree, int value)
 {
     node *node = malloc(sizeof(node));
     node->value = value;
+    node->left = NULL;
+    node->right = NULL;
     bstInsertNode(tree, node);
 }
 
