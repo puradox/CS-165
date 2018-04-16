@@ -24,4 +24,6 @@ void bstInsert(node *tree, int value);
 // bstToArray converts the binary search tree to an ascending ordered array.
 int *bstToArray(node *tree);
 
+void bstDestroy(node *tree);
+
 #endif
