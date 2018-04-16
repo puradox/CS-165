@@ -2,36 +2,36 @@
 
 // rand returns a random index for an array of the specified size.
 // This is used to get the random pivot for use in QuickSelect.
-uint16_t randIndex(uint16_t size)
+int randIndex(int size)
 {
     return dshrandom(0) * (size - 1);
 }
 
 // swap modifies the given array by swapping two elements in place.
-void swap(uint16_t arr[], uint16_t a, uint16_t b)
+void swap(int arr[], int a, int b)
 {
-    uint16_t prevA = arr[a];
+    int prevA = arr[a];
     arr[a] = arr[b];
     arr[b] = prevA;
 }
 
 // max chooses the largest of the two specified numbers.
-uint16_t max(uint16_t a, uint16_t b)
+int max(int a, int b)
 {
     return a > b ? a : b;
 }
 
 // min chooses the smallest of the two specified numbers.
-uint16_t min(uint16_t a, uint16_t b)
+int min(int a, int b)
 {
     return a < b ? a : b;
 }
 
 // debug prints out the array specified
-void debug(uint16_t arr[], uint16_t start, uint16_t end)
+void debug(int arr[], int start, int end)
 {
     printf("Array: ");
-    for (uint16_t i = start; i <= end; i++)
+    for (int i = start; i <= end; i++)
     {
         printf("%d ", arr[i]);
     }
@@ -40,13 +40,13 @@ void debug(uint16_t arr[], uint16_t start, uint16_t end)
 
 // shift modifies the given array to move the specified element to the left
 // or right a number of times. This shifts the rest of the elements around.
-void shift(uint16_t arr[], uint16_t pos, int shiftAmount)
+void shift(int arr[], int pos, int shiftAmount)
 {
-    uint16_t element = arr[pos];
+    int element = arr[pos];
     if (shiftAmount > 0)
     {
         // Shift right
-        for (uint16_t i = pos; i < pos + shiftAmount; i++)
+        for (int i = pos; i < pos + shiftAmount; i++)
         {
             arr[i] = arr[i + 1];
         }
@@ -54,7 +54,7 @@ void shift(uint16_t arr[], uint16_t pos, int shiftAmount)
     else if (shiftAmount < 0)
     {
         // Shift left
-        for (uint16_t i = pos; i > pos + shiftAmount; i--)
+        for (int i = pos; i > pos + shiftAmount; i--)
         {
             arr[i] = arr[i - 1];
         }
@@ -63,17 +63,17 @@ void shift(uint16_t arr[], uint16_t pos, int shiftAmount)
 }
 
 // split takes the specified array and splits it into several parts.
-uint16_t** split(uint16_t arr[], uint16_t size, uint16_t splits)
+int** split(int arr[], int size, int splits)
 {
     assert(size % splits == 0);
 
-    uint16_t** results;
-    uint16_t splitSize = size / splits;
+    int** results;
+    int splitSize = size / splits;
 
-    results = malloc(sizeof(uint16_t*) * splits);
-    for (uint16_t i = 0; i < splits; i++)
+    results = malloc(sizeof(int*) * splits);
+    for (int i = 0; i < splits; i++)
     {
-        results[i] = malloc(sizeof(uint16_t) * splitSize);
+        results[i] = malloc(sizeof(int) * splitSize);
     }
 
     return results;

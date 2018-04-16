@@ -1,14 +1,14 @@
 #include "heap.h"
 
-void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompFunc compare)
+void siftDown(int arr[], int start, int curr, int end, CompFunc compare)
 {
     assert(start <= end);
     assert(start <= curr);
     assert(curr <= end);
 
-    uint16_t leftChild = 2 * (curr - start) + 1 + start;
-    uint16_t rightChild = 2 * (curr - start) + 2 + start;
-    uint16_t swapIndex = curr;
+    int leftChild = 2 * (curr - start) + 1 + start;
+    int rightChild = 2 * (curr - start) + 2 + start;
+    int swapIndex = curr;
 
     if (leftChild > end)
         return;
@@ -30,7 +30,7 @@ void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompF
     siftDown(arr, start, swapIndex, end, compare);
 }
 
-void heapify(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
+void heapify(int arr[], int start, int end, CompFunc compare)
 {
     // Execute siftDown on every parent
     for (int16_t i = (int16_t)(start + (end - start - 1) / 2); i >= start; i--)
@@ -39,7 +39,7 @@ void heapify(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
     }
 }
 
-void heapSort(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
+void heapSort(int arr[], int start, int end, CompFunc compare)
 {
     heapify(arr, start, end, compare);
 
@@ -50,7 +50,7 @@ void heapSort(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare)
     }
 }
 
-void minHeapSort(uint16_t arr[], uint16_t size)
+void minHeapSort(int arr[], int size)
 {
     #ifdef DEBUG
     heapSort(arr, 0, size - 1, lt);
@@ -59,7 +59,7 @@ void minHeapSort(uint16_t arr[], uint16_t size)
     #endif
 }
 
-void maxHeapSort(uint16_t arr[], uint16_t size)
+void maxHeapSort(int arr[], int size)
 {
     #ifdef DEBUG
     heapSort(arr, 0, size - 1, gt);
@@ -68,7 +68,7 @@ void maxHeapSort(uint16_t arr[], uint16_t size)
     #endif
 }
 
-uint16_t minHeapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+int minHeapSelect(int arr[], int start, int end, int k)
 {
     assert(start < end);
     assert(start < k);
@@ -94,7 +94,7 @@ uint16_t minHeapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
     return start;
 }
 
-uint16_t maxHeapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+int maxHeapSelect(int arr[], int start, int end, int k)
 {
     assert(start < end);
     assert(start < k);

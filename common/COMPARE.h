@@ -2,7 +2,6 @@
 #define COMPARE_H
 
 #include <stdarg.h>
-#include <stdint.h>
 #include <stdio.h>
 
 #define COMPARELIMIT 10000
@@ -10,13 +9,13 @@
 
 //#define DEBUG
 
-typedef int8_t (*CompFunc)(uint16_t, uint16_t);
+typedef int8_t (*CompFunc)(int, int);
 
 // Comparators
-int8_t lt(uint16_t a, uint16_t b);
-int8_t gt(uint16_t a, uint16_t b);
-int8_t compareLt(uint16_t a, uint16_t b); // uses COMPARE
-int8_t compareGt(uint16_t a, uint16_t b); // uses COMPARE
+int8_t lt(int a, int b);
+int8_t gt(int a, int b);
+int8_t compareLt(int a, int b); // uses COMPARE
+int8_t compareGt(int a, int b); // uses COMPARE
 
 //	Comparisons to determine the biggest "k" array elements
 //	COMPARE( 0,n ) initializes a random array of length n

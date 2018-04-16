@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <math.h>
 
 #include "../common/heap.h"
@@ -18,13 +17,13 @@ int doalg(int n, int k, int Best[]);
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    uint16_t *elements = malloc(sizeof(uint16_t) * (uint16_t)n);
-    for (uint16_t i = 0; i < n; i++)
+    int *elements = malloc(sizeof(int) * (int)n);
+    for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
     // Create a minheap to (eventually) hold the k largest elements
-    uint16_t *heap = malloc(sizeof(uint16_t) * (uint16_t)k);
-    for (uint16_t i = 0; i < k; i++)
+    int *heap = malloc(sizeof(int) * (int)k);
+    for (int i = 0; i < k; i++)
         heap[i] = elements[i];
 
     #ifdef DEBUG
@@ -39,7 +38,7 @@ int doalg(int n, int k, int Best[])
     int siftComps = 0;
     int sifts = 0;
 
-    for (uint16_t i = k; i < n; i++)
+    for (int i = k; i < n; i++)
     {
         #ifdef DEBUG
         if (gt(elements[i], heap[0]))

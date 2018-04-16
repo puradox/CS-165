@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <math.h>
 
 #include "../common/heap.h"
@@ -19,8 +18,8 @@ int doalg(int n, int k, int Best[]);
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    uint16_t *elements = malloc(sizeof(uint16_t) * (uint16_t)n);
-    for (uint16_t i = 0; i < n; i++)
+    int *elements = malloc(sizeof(int) * (int)n);
+    for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
     // Sort the first k values

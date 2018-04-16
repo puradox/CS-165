@@ -1,20 +1,19 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <math.h>
 
 #include "../common/heap.h"
 #include "../common/util.h"
 
-uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot);
-uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k);
+int partition(int arr[], int start, int end, int pivot);
+int dselect(int arr[], int start, int end, int k);
 int doalg(int n, int k, int Best[]);
 
 // partition partially sorts the array within the given range around a ranomly
 // generated pivot. The array will partially sorted in ascending order by the
 // pivot value.
-uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot)
+int partition(int arr[], int start, int end, int pivot)
 {
     assert(start < end);
     assert(start <= pivot);
@@ -24,8 +23,8 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot)
     swap(arr, pivot, end);
 
     // Find a new place for the pivot by partially sorting.
-    uint16_t cursor = start;
-    for (uint16_t i = start; i < end; i++)
+    int cursor = start;
+    for (int i = start; i < end; i++)
     {
         #ifdef DEBUG
         if (gt(arr[i], arr[end]))
@@ -45,13 +44,13 @@ uint16_t partition(uint16_t arr[], uint16_t start, uint16_t end, uint16_t pivot)
     return cursor;
 }
 
-const static uint16_t SIZE_CUTOFF = 10;
-const static uint16_t SPLIT_SIZE = 8;
+const static int SIZE_CUTOFF = 10;
+const static int SPLIT_SIZE = 8;
 
 // dselect runs a modified version of the deterministic selection algorithm to
 // partially sort the array specified in ascending order.
 // From index 0 to k, you will find the k largest elements of in the array.
-uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
+int dselect(int arr[], int start, int end, int k)
 {
     if (start == end)
         return k - 1;
@@ -60,26 +59,26 @@ uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
     assert(start < k);
     assert(k <= end + 1);
 
-    const uint16_t size = end - start + 1;
+    const int size = end - start + 1;
 
     if (size < SIZE_CUTOFF)
         return minHeapSelect(arr, start, end, k);
 
-    const uint16_t splitAmount = (uint16_t)(ceil((double)size / (double)SPLIT_SIZE));
-    uint16_t *middles = malloc(sizeof(uint16_t) * (uint16_t)splitAmount);
+    const int splitAmount = (int)(ceil((double)size / (double)SPLIT_SIZE));
+    int *middles = malloc(sizeof(int) * (int)splitAmount);
 
-    for (uint16_t split = 0; split < splitAmount; split++)
+    for (int split = 0; split < splitAmount; split++)
     {
-        const uint16_t splitStart = start + split * SPLIT_SIZE;
-        const uint16_t splitEnd = min(splitStart + SPLIT_SIZE - 1, end);
-        const uint16_t splitSize = splitEnd - splitStart + 1;
-        const uint16_t splitK = (uint16_t)(ceil((double)splitSize / 2.0) + splitStart);
-        const uint16_t splitMedian = dselect(arr, splitStart, splitEnd, splitK);
+        const int splitStart = start + split * SPLIT_SIZE;
+        const int splitEnd = min(splitStart + SPLIT_SIZE - 1, end);
+        const int splitSize = splitEnd - splitStart + 1;
+        const int splitK = (int)(ceil((double)splitSize / 2.0) + splitStart);
+        const int splitMedian = dselect(arr, splitStart, splitEnd, splitK);
         middles[split] = arr[splitMedian];
     }
 
-    const uint16_t middlesK = (uint16_t)(ceil((double)splitAmount / 2.0));
-    const uint16_t middlesMedian = dselect(middles, 0, splitAmount - 1, middlesK);
+    const int middlesK = (int)(ceil((double)splitAmount / 2.0));
+    const int middlesMedian = dselect(middles, 0, splitAmount - 1, middlesK);
     int16_t pivotIndex = -1;
     for (int16_t i = (int16_t)start; i <= end; i++)
     {
@@ -92,7 +91,7 @@ uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
     assert(pivotIndex != -1);
     free(middles);
 
-    const uint16_t pivot = partition(arr, start, end, (uint16_t)pivotIndex);
+    const int pivot = partition(arr, start, end, (int)pivotIndex);
 
     // Check the pivot position
     if (k - 1 < pivot)
@@ -113,21 +112,21 @@ uint16_t dselect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    uint16_t *elements = malloc(sizeof(uint16_t) * (uint16_t)n);
-    for (uint16_t i = 0; i < n; i++)
+    int *elements = malloc(sizeof(int) * (int)n);
+    for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
-    dselect(elements, 0, (uint16_t)n - 1, (uint16_t)k);
+    dselect(elements, 0, (int)n - 1, (int)k);
     int selectComps = getComps();
 
     // Sort the k maximum values
-    minHeapSort(elements, (uint16_t)k);
+    minHeapSort(elements, (int)k);
     int sortComps = getComps();
     printf("Comparisons: select (%d) + sort (%d) = %d\n", selectComps, sortComps, allComps());
     resetComps();
 
     // Copy results over
-    for (uint16_t i = 0; i < k; i++)
+    for (int i = 0; i < k; i++)
         Best[i] = elements[i];
 
     free(elements);

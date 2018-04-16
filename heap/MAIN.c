@@ -49,7 +49,7 @@ int main()
     /*
     // Run the algorithm muliple times with different seeds for the random
     // number generator.
-    for (uint16_t i = 0; i < 100; i++)
+    for (int i = 0; i < 100; i++)
     {
         dshrandom(-1);
         dshrandom(i);

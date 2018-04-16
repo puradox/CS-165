@@ -1,21 +1,21 @@
 #include "COMPARE.h"
 
-int8_t compareLt(uint16_t a, uint16_t b)
+int8_t compareLt(int a, int b)
 {
-    return (uint8_t)COMPARE(a, b) == 2;
+    return COMPARE(a, b) == 2;
 }
 
-int8_t compareGt(uint16_t a, uint16_t b)
+int8_t compareGt(int a, int b)
 {
-    return (uint8_t)COMPARE(a, b) == 1;
+    return COMPARE(a, b) == 1;
 }
 
-int8_t lt(uint16_t a, uint16_t b)
+int8_t lt(int a, int b)
 {
     return a < b;
 }
 
-int8_t gt(uint16_t a, uint16_t b)
+int8_t gt(int a, int b)
 {
     return a > b;
 }
