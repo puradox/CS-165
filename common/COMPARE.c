@@ -90,8 +90,9 @@ int COMPARE(int arg1, int arg2, ...)
                 else
                     printf("******* GOT: number[Best[%d]] = number[%d] = %d\n", i, Best[i], number[Best[i]]);
 
-                int correctIndex;
-                for (int j = 0; j < sizeof(number) / sizeof(int); j++)
+                int correctIndex = -1;
+                int numberSize = sizeof(number) / sizeof(int);
+                for (int j = 0; j < numberSize; j++)
                 {
                     if (number[j] == size - i)
                     {
