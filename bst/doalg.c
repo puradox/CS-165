@@ -4,11 +4,12 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "../common/bst.h"
 #include "../common/util.h"
 
 int doalg(int n, int k, int Best[]);
 
-// Performs a partial heap sort to find the k largest elements.
+// Construct a binary search tree and iteratively add to it.
 // Returns 1 if there were no errors, 0 otherwise.
 //
 // Bounds:

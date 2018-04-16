@@ -8,6 +8,8 @@
 #define COMPARELIMIT 10000
 #define KLIMIT 100
 
+//#define DEBUG
+
 typedef int8_t (*CompFunc)(uint16_t, uint16_t);
 
 // Comparators

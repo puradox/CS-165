@@ -5,8 +5,6 @@
 #include "COMPARE.h"
 #include "util.h"
 
-//#define DEBUG
-
 // siftDown enforces the max-heap property by starting at the specified node and
 // propogating down the tree, swapping elements until that branch looks correct.
 void siftDown(uint16_t arr[], uint16_t start, uint16_t curr, uint16_t end, CompFunc compare);

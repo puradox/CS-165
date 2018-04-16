@@ -4,8 +4,6 @@
 #include "COMPARE.h"
 #include "util.h"
 
-//#define DEBUG
-
 struct node
 {
     int value;
@@ -22,6 +20,9 @@ node *bstConstruct(int arr[], int start, int end);
 void bstInsert(node *tree, int value);
 
 // bstToArray converts the binary search tree to an ascending ordered array.
-int *bstToArray(node *tree);
+int *bstToArray(node *tree, int size);
+
+// bstMin finds the minimum value of the binary search tree.
+int bstMin(node *tree);
 
 #endif
