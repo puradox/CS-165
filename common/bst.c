@@ -44,7 +44,7 @@ node *bstConstruct(int arr[], int start, int end)
   }
 }
 
-void bstInsertNode(node *tree, node *node)
+void bstInsertNode(node *tree, node *valueNode)
 {
 #ifdef DEBUG
     CompFunc compare = lt;
@@ -52,44 +52,45 @@ void bstInsertNode(node *tree, node *node)
     CompFunc compare = compareLt;
 #endif
 
-    if (compare(node->value, tree->value))
+    if (compare(valueNode->value, tree->value))
     {
         if (tree->right != NULL)
-            bstInsertNode(tree->right, node);
+            bstInsertNode(tree->right, valueNode);
         else
-            tree->right = node;
+            tree->right = valueNode;
     }
     else
     {
         if (tree->left != NULL)
-            bstInsertNode(tree->left, node);
+            bstInsertNode(tree->left, valueNode);
         else
-            tree->left = node;
+            tree->left = valueNode;
     }
 }
 
 void bstInsert(node *tree, int value)
 {
-    node *node = malloc(sizeof(node));
-    node->value = value;
-    node->left = NULL;
-    node->right = NULL;
-    bstInsertNode(tree, node);
+    node *valueNode = malloc(sizeof(valueNode));
+    valueNode->value = value;
+    valueNode->left = NULL;
+    valueNode->right = NULL;
+
+    bstInsertNode(tree, valueNode);
 }
 
-void toArray(node *cursor, int *arr, int *currentSize, int end)
+void toArray(node *tree, int *arr, int *currentSize, int end)
 {
-    assert(cursor != NULL);
+    assert(tree != NULL);
     assert(arr != NULL);
     assert(currentSize != NULL);
     assert(*currentSize <= end);
 
-    if (cursor->left != NULL)
-        return toArray(cursor->left, arr, currentSize, end);
-    arr[*currentSize] = cursor->value;
+    if (tree->left != NULL)
+        toArray(tree->left, arr, currentSize, end);
+    arr[*currentSize] = tree->value;
     (*currentSize)++;
-    if (cursor->right != NULL)
-        toArray(cursor->right, arr, currentSize, end);
+    if (tree->right != NULL)
+        toArray(tree->right, arr, currentSize, end);
 }
 
 int *bstToArray(node *tree, int size)
