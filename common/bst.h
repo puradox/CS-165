@@ -25,4 +25,6 @@ int *bstToArray(node *tree, int size);
 // bstMin finds the minimum value of the binary search tree.
 int bstMin(node *tree);
 
+void bstDestroy(node *tree);
+
 #endif
