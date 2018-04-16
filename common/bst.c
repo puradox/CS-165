@@ -43,15 +43,6 @@ node *bstConstruct(int arr[], int start, int end)
   }
 }
 
-void bstDestroy(node *tree) {
-  if (tree->left != NULL)
-    bstDestroy(tree->left);
-  if (tree->right != NULL)
-    bstDestroy(tree->right);
-
-  free(tree);
-}
-
 void bstInsertNode(node *tree, node *node)
 {
 #ifdef DEBUG
@@ -106,4 +97,13 @@ int bstMin(node *tree)
     if (tree->left)
         return bstMin(cursor->left);
     return cursor->value;
+}
+
+void bstDestroy(node *tree) {
+  if (tree->left != NULL)
+    bstDestroy(tree->left);
+  if (tree->right != NULL)
+    bstDestroy(tree->right);
+
+  free(tree);
 }
