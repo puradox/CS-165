@@ -33,14 +33,18 @@ int doalg(int n, int k, int Best[])
         Best[i] = elements[i];
 
     // Sort the first k values
+    resetComps();
     minHeapSort(Best, k);
-    //printf("Comparisons: %d\n", getComps());
-    //resetComps();
+    printf("Sort comparisons: %d\n", getComps());
+    printf("Add to BST comparisons: %d\n", n - k);
+
+    int insertComps = 0;
 
     for (int i = k; i < n; ++i)
     {
         if (compare(elements[i], Best[k - 1]))
         {
+            getComps();
             node *tree = bstConstruct(Best, 0, k - 2);
             bstInsert(tree, elements[i]);
 
@@ -48,10 +52,14 @@ int doalg(int n, int k, int Best[])
             for (int j = 0; j < k; j++)
                 Best[j] = newBest[j];
 
+            insertComps += getComps();
             free(newBest);
             bstDestroy(tree);
         }
     }
+
+    printf("Insert comparisons: %d\n", insertComps);
+    printf("Total comparisons: %d\n\n", allComps());
 
     free(elements);
     return 1; // No errors
