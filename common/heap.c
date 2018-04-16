@@ -33,7 +33,7 @@ void siftDown(int arr[], int start, int curr, int end, CompFunc compare)
 void heapify(int arr[], int start, int end, CompFunc compare)
 {
     // Execute siftDown on every parent
-    for (int16_t i = (int16_t)(start + (end - start - 1) / 2); i >= start; i--)
+    for (int i = start + (end - start - 1) / 2; i >= start; i--)
     {
         siftDown(arr, start, i, end, compare);
     }
@@ -43,7 +43,7 @@ void heapSort(int arr[], int start, int end, CompFunc compare)
 {
     heapify(arr, start, end, compare);
 
-    for (int16_t i = end; i > start; i--)
+    for (int i = end; i > start; i--)
     {
         swap(arr, start, i);
         siftDown(arr, start, start, i - 1, compare);
@@ -80,7 +80,7 @@ int minHeapSelect(int arr[], int start, int end, int k)
     heapify(arr, start, end, compareLt);
     #endif
 
-    for (int16_t i = end; i >= k; i--)
+    for (int i = end; i >= k; i--)
     {
         swap(arr, start, i);
 
@@ -106,7 +106,7 @@ int maxHeapSelect(int arr[], int start, int end, int k)
     heapify(arr, start, end, compareGt);
     #endif
 
-    for (int16_t i = end; i >= k; i--)
+    for (int i = end; i >= k; i--)
     {
         swap(arr, start, i);
 

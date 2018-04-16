@@ -65,7 +65,7 @@ int dselect(int arr[], int start, int end, int k)
         return minHeapSelect(arr, start, end, k);
 
     const int splitAmount = (int)(ceil((double)size / (double)SPLIT_SIZE));
-    int *middles = malloc(sizeof(int) * (int)splitAmount);
+    int *middles = malloc(sizeof(int) * splitAmount);
 
     for (int split = 0; split < splitAmount; split++)
     {
@@ -79,8 +79,8 @@ int dselect(int arr[], int start, int end, int k)
 
     const int middlesK = (int)(ceil((double)splitAmount / 2.0));
     const int middlesMedian = dselect(middles, 0, splitAmount - 1, middlesK);
-    int16_t pivotIndex = -1;
-    for (int16_t i = (int16_t)start; i <= end; i++)
+    int pivotIndex = -1;
+    for (int i = start; i <= end; i++)
     {
         if (arr[i] == middles[middlesMedian])
         {
@@ -91,7 +91,7 @@ int dselect(int arr[], int start, int end, int k)
     assert(pivotIndex != -1);
     free(middles);
 
-    const int pivot = partition(arr, start, end, (int)pivotIndex);
+    const int pivot = partition(arr, start, end, pivotIndex);
 
     // Check the pivot position
     if (k - 1 < pivot)
@@ -112,15 +112,15 @@ int dselect(int arr[], int start, int end, int k)
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    int *elements = malloc(sizeof(int) * (int)n);
+    int *elements = malloc(sizeof(int) * n);
     for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
-    dselect(elements, 0, (int)n - 1, (int)k);
+    dselect(elements, 0, n - 1, k);
     int selectComps = getComps();
 
     // Sort the k maximum values
-    minHeapSort(elements, (int)k);
+    minHeapSort(elements, k);
     int sortComps = getComps();
     printf("Comparisons: select (%d) + sort (%d) = %d\n", selectComps, sortComps, allComps());
     resetComps();

@@ -17,12 +17,12 @@ int doalg(int n, int k, int Best[]);
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    int *elements = malloc(sizeof(int) * (int)n);
+    int *elements = malloc(sizeof(int) * n);
     for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
     // Create a minheap to (eventually) hold the k largest elements
-    int *heap = malloc(sizeof(int) * (int)k);
+    int *heap = malloc(sizeof(int) * k);
     for (int i = 0; i < k; i++)
         heap[i] = elements[i];
 
@@ -63,7 +63,7 @@ int doalg(int n, int k, int Best[])
     printf("Adding to heap comparisons: %d\n", n - k);
 
     // Copy results over
-    for (int16_t i = k - 1; i > 0; i--)
+    for (int i = k - 1; i > 0; i--)
     {
         swap(heap, 0, i);
 

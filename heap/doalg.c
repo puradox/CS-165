@@ -17,12 +17,12 @@ int doalg(int n, int k, int Best[]);
 int doalg(int n, int k, int Best[])
 {
     // Represent values by their indices
-    int *elements = malloc(sizeof(int) * (int)n);
+    int *elements = malloc(sizeof(int) * n);
     for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
     // Sort the k maximum values
-    maxHeapSelect(elements, 0, (int)(n - 1), (int)(n - k));
+    maxHeapSelect(elements, 0, n - 1, n - k);
     //printf("Comparisons: %d\n", getComps());
     //resetComps();
 
