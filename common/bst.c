@@ -70,7 +70,7 @@ void bstInsertNode(node *tree, node *valueNode)
 
 void bstInsert(node *tree, int value)
 {
-    node *valueNode = malloc(sizeof(valueNode));
+    node *valueNode = malloc(sizeof(node));
     valueNode->value = value;
     valueNode->left = NULL;
     valueNode->right = NULL;
@@ -80,15 +80,13 @@ void bstInsert(node *tree, int value)
 
 void toArray(node *tree, int *arr, int *currentSize, int end)
 {
-    assert(tree != NULL);
-    assert(arr != NULL);
-    assert(currentSize != NULL);
-    assert(*currentSize <= end);
-
     if (tree->left != NULL)
         toArray(tree->left, arr, currentSize, end);
-    arr[*currentSize] = tree->value;
+
+    int index = *currentSize;
+    arr[index] = tree->value;
     (*currentSize)++;
+
     if (tree->right != NULL)
         toArray(tree->right, arr, currentSize, end);
 }
@@ -96,8 +94,10 @@ void toArray(node *tree, int *arr, int *currentSize, int end)
 int *bstToArray(node *tree, int size)
 {
     int *arr = malloc(sizeof(int) * size);
-    int currentSize = 0;
-    toArray(tree, arr, &currentSize, size - 1);
+    int *currentSize = malloc(sizeof(int));
+    *currentSize = 0;
+    toArray(tree, arr, currentSize, size - 1);
+    free(currentSize);
     return arr;
 }
 
