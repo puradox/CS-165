@@ -17,6 +17,7 @@ void heapify(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare);
 // heapSort sorts the array in in-place using the specified compare function.
 void heapSort(uint16_t arr[], uint16_t start, uint16_t end, CompFunc compare);
 void minHeapSort(uint16_t arr[], uint16_t size);
+void maxHeapSort(uint16_t arr[], uint16_t size);
 
 // heapSelect selects the kth element in the sorted array.
 // Runs in O(k log n) time.

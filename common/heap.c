@@ -59,6 +59,15 @@ void minHeapSort(uint16_t arr[], uint16_t size)
     #endif
 }
 
+void maxHeapSort(uint16_t arr[], uint16_t size)
+{
+    #ifdef DEBUG
+    heapSort(arr, 0, size - 1, gt);
+    #else
+    heapSort(arr, 0, size - 1, compareGt);
+    #endif
+}
+
 uint16_t minHeapSelect(uint16_t arr[], uint16_t start, uint16_t end, uint16_t k)
 {
     assert(start < end);
