@@ -53,14 +53,14 @@ void bstInsertNode(node *tree, node *node)
 
     if (compare(node->value, tree->value))
     {
-        if (tree->right)
+        if (tree->right != NULL)
             bstInsertNode(tree->right, node);
         else
             tree->right = node;
     }
     else
     {
-        if (tree->left)
+        if (tree->left != NULL)
             bstInsertNode(tree->left, node);
         else
             tree->left = node;
@@ -76,25 +76,31 @@ void bstInsert(node *tree, int value)
 
 void toArray(node *cursor, int *arr, int *currentSize, int end)
 {
+    assert(cursor != NULL);
+    assert(arr != NULL);
+    assert(currentSize != NULL);
     assert(*currentSize <= end);
-    if (cursor->left)
+
+    if (cursor->left != NULL)
         return toArray(cursor->left, arr, currentSize, end);
-    arr[*currentSize++] = cursor->value;
-    toArray(cursor->right, arr, currentSize, end);
+    arr[*currentSize] = cursor->value;
+    (*currentSize)++;
+    if (cursor->right != NULL)
+        toArray(cursor->right, arr, currentSize, end);
 }
 
 int *bstToArray(node *tree, int size)
 {
     int *arr = malloc(sizeof(int) * size);
-    int *currentSize = 0;
-    toArray(tree, arr, currentSize, size - 1);
+    int currentSize = 0;
+    toArray(tree, arr, &currentSize, size - 1);
     return arr;
 }
 
 int bstMin(node *tree)
 {
-    assert(tree);
-    if (tree->left)
+    assert(tree != NULL);
+    if (tree->left != NULL)
         return bstMin(tree->left);
     return tree->value;
 }

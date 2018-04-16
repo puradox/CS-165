@@ -43,8 +43,8 @@ int doalg(int n, int k, int Best[])
         {
             node *tree = bstConstruct(Best, 1, k - 1);
             bstInsert(tree, elements[i]);
-            
-            int * newBest = bstToArray(tree);
+
+            int * newBest = bstToArray(tree, k);
             for (int j = 0; j < k; j++)
                 Best[j] = newBest[j];
 
@@ -52,7 +52,7 @@ int doalg(int n, int k, int Best[])
             bstDestroy(tree);
         }
     }
-    
+
     free(elements);
     return 1; // No errors
 }
