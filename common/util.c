@@ -79,13 +79,11 @@ int** split(int arr[], int size, int splits)
     return results;
 }
 
-static int lastComps = 0;
 static int totalComps = 0;
 
 int getComps(void)
 {
     int recentComps = COMPARE(-1, -1) - totalComps;
-    lastComps = recentComps;
     totalComps += recentComps;
     return recentComps;
 }
@@ -97,6 +95,5 @@ int allComps(void)
 
 void resetComps(void)
 {
-    lastComps = 0;
     totalComps = 0;
 }
