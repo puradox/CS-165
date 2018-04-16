@@ -6,6 +6,13 @@
 #include "../common/heap.h"
 #include "../common/bst.h"
 #include "../common/util.h"
+#include "../common/COMPARE.h"
+
+#ifdef DEBUG
+CompFunc compare = gt;
+#else
+CompFunc compare = compareGt;
+#endif
 
 int doalg(int n, int k, int Best[]);
 
@@ -22,15 +29,30 @@ int doalg(int n, int k, int Best[])
     for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
+    for (int i = 0; i < k; i++)
+        Best[i] = elements[i];
+
     // Sort the first k values
-    maxHeapSort(elements, k);
+    minHeapSort(Best, k);
     //printf("Comparisons: %d\n", getComps());
     //resetComps();
 
-    // Copy results over
-    for (int i = k - 1; i >= 0; i--)
-        Best[k - 1 - i] = elements[i];
+    for (int i = k; i < n; ++i)
+    {
+        if (compare(elements[i], Best[k - 1]))
+        {
+            node *tree = bstConstruct(Best, 1, k - 1);
+            bstInsert(tree, elements[i]);
+            
+            int * newBest = bstToArray(tree);
+            for (int j = 0; j < k; j++)
+                Best[j] = newBest[j];
 
+            free(newBest);
+            bstDestroy(tree);
+        }
+    }
+    
     free(elements);
     return 1; // No errors
 }
