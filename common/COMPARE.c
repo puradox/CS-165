@@ -1,21 +1,21 @@
 #include "COMPARE.h"
 
-int8_t compareLt(int a, int b)
+int compareLt(int a, int b)
 {
     return COMPARE(a, b) == 2;
 }
 
-int8_t compareGt(int a, int b)
+int compareGt(int a, int b)
 {
     return COMPARE(a, b) == 1;
 }
 
-int8_t lt(int a, int b)
+int lt(int a, int b)
 {
     return a < b;
 }
 
-int8_t gt(int a, int b)
+int gt(int a, int b)
 {
     return a > b;
 }

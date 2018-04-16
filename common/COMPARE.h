@@ -9,13 +9,13 @@
 
 //#define DEBUG
 
-typedef int8_t (*CompFunc)(int, int);
+typedef int (*CompFunc)(int, int);
 
 // Comparators
-int8_t lt(int a, int b);
-int8_t gt(int a, int b);
-int8_t compareLt(int a, int b); // uses COMPARE
-int8_t compareGt(int a, int b); // uses COMPARE
+int lt(int a, int b);
+int gt(int a, int b);
+int compareLt(int a, int b); // uses COMPARE
+int compareGt(int a, int b); // uses COMPARE
 
 //	Comparisons to determine the biggest "k" array elements
 //	COMPARE( 0,n ) initializes a random array of length n
