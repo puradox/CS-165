@@ -17,5 +17,6 @@ $(TARGET): $(OBJECTS) doalg.c
 
 clean:
 	-rm -f *.o
+	-rm -f ../common/*.o
 	-rm -f $(TARGET)
 	-rm -rf $(TARGET).dSYM
