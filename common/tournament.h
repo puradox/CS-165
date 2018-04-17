@@ -7,22 +7,22 @@
 struct player
 {
     int value;
-    struct player *leftPredecessor;
-    struct player *rightPredecessor;
-    struct player *successor;
+    struct player *left;
+    struct player *right;
+    struct player *predecessor;
 };
 
 typedef struct player player;
 
 // tournamentConstruct constructs a binary tree modeled to work with the
-// tournament algorithm.
+// tournament algorithm. Returns the champion of the tournament.
 player *tournamentConstruct(int arr[], int start, int end);
 
-// tournamentInsert inserts an element into the tournament and returns the
-// element that was eliminated.
-int tournamentInsert(player *tree, int value);
+// tournamentInsert replaces the champion with a new player and re-runs
+// the tournament.
+void tournamentInsert(player *champion, int value);
 
 // tournamentDestroy frees all resources used by the tournament.
-void tournamentDestroy(player *tree);
+void tournamentDestroy(player *champion);
 
 #endif

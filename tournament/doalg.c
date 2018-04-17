@@ -4,7 +4,7 @@
 #include <math.h>
 
 #include "../common/tournament.h"
-#include "../common/util.h"
+#include "../common/heap.h"
 #include "../common/COMPARE.h"
 
 int doalg(int n, int k, int Best[]);
@@ -22,6 +22,21 @@ int doalg(int n, int k, int Best[])
     for (int i = 0; i < n; i++)
         elements[i] = i + 1;
 
+    // Insert n - k + 1 elements into the tournament.
+    player *champion = tournamentConstruct(elements, k - 2, n - 1);
+
+    for (int i = 0; i < k - 1; i++)
+    {
+        Best[i] = champion->value;
+        tournamentInsert(champion, elements[i]);
+    }
+
+    Best[k - 1] = champion->value; // The cherry on top
+
+    // Sort Best[] since it's not guaranteed to be sorted already
+    minHeapSort(Best, k);
+
+    tournamentDestroy(champion);
     free(elements);
     return 1; // No errors
 }

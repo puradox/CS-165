@@ -62,23 +62,6 @@ void shift(int arr[], int pos, int shiftAmount)
     arr[pos + shiftAmount] = element;
 }
 
-// split takes the specified array and splits it into several parts.
-int** split(int arr[], int size, int splits)
-{
-    assert(size % splits == 0);
-
-    int** results;
-    int splitSize = size / splits;
-
-    results = malloc(sizeof(int*) * splits);
-    for (int i = 0; i < splits; i++)
-    {
-        results[i] = malloc(sizeof(int) * splitSize);
-    }
-
-    return results;
-}
-
 static int totalComps = 0;
 
 int getComps(void)
