@@ -6,6 +6,7 @@
 #include "../common/tournament.h"
 #include "../common/heap.h"
 #include "../common/COMPARE.h"
+#include "../common/sorting.h"
 
 int doalg(int n, int k, int Best[]);
 
@@ -34,7 +35,7 @@ int doalg(int n, int k, int Best[])
     Best[k - 1] = champion->value; // The cherry on top
 
     // Sort Best[] since it's not guaranteed to be sorted already
-    minHeapSort(Best, k);
+    insertionSort(Best, k);
 
     tournamentDestroy(champion);
     free(elements);
