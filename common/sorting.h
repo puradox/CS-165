@@ -3,8 +3,7 @@
 
 #include "COMPARE.h"
 
-// Uses the insertion sort algorithm to sort the passed array, then returns the
-// result.
+// Uses the insertion sort algorithm to sort the passed array in-place.
 void insertionSort(int arr[], int len);
 
 #endif
