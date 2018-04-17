@@ -12,7 +12,7 @@ all: default
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TARGET): $(OBJECTS) doalg.c
+$(TARGET): $(OBJECTS)
 	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@
 
 clean:
