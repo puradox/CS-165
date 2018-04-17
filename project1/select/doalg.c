@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../common/heap.h"
-#include "../common/util.h"
+#include "../../common/heap.h"
+#include "../../common/util.h"
 
 int partition(int arr[], int start, int end, int pivot);
 int dselect(int arr[], int start, int end, int k);

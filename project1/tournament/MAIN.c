@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
-#include "../common/COMPARE.h"
+#include "../../common/COMPARE.h"
 #include "doalg.c"
 
 #define MAXK 100

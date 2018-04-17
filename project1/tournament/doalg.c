@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../common/tournament.h"
-#include "../common/heap.h"
-#include "../common/COMPARE.h"
-#include "../common/sorting.h"
+#include "../../common/tournament.h"
+#include "../../common/heap.h"
+#include "../../common/COMPARE.h"
+#include "../../common/sorting.h"
 
 int doalg(int n, int k, int Best[]);
 

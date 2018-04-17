@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../common/heap.h"
-#include "../common/util.h"
+#include "../../common/heap.h"
+#include "../../common/util.h"
 
 int doalg(int n, int k, int Best[]);
 

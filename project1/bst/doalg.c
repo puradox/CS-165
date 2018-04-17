@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../common/heap.h"
-#include "../common/bst.h"
-#include "../common/util.h"
-#include "../common/COMPARE.h"
+#include "../../common/heap.h"
+#include "../../common/bst.h"
+#include "../../common/util.h"
+#include "../../common/COMPARE.h"
 
 #ifdef DEBUG
 CompFunc compare = gt;
