@@ -18,6 +18,28 @@ int doalg(int n, int k, int Best[]);
 //   1  <= k <= 100
 int doalg(int n, int k, int Best[])
 {
+    // Error messages for erroneous inputs
+    if (n < 10)
+    {
+        printf("Error: value of n is too small. Bounds are 10 <= n <= 10000");
+        return 0;
+    }
+    if (n > 10000)
+    {
+        printf("Error: value of n is too large. Bounds are 10 <= n <= 10000");
+        return 0;
+    }
+    if (k < 1)
+    {
+        printf("Error: value of k is too small. Bounds are 1 <= k <= 100");
+        return 0;
+    }
+    if (k > 100)
+    {
+        printf("Error: value of k is too large. Bounds are 1 <= k <= 100");
+        return 0;
+    }
+
     // Represent values by their indices
     int *elements = malloc(sizeof(int) * n);
     for (int i = 0; i < n; i++)
