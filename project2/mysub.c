@@ -1,21 +1,30 @@
 #include <stdio.h>
 
+void set_A(int A[], int element)
+{
+    if (A[1] == -1)
+        A[1] = element;
+    else if (A[2] == -1)
+        A[2] = element;
+}
+
+int find_A_from_ABB(int A[]);
+int find_A_from_AAB(int A[]);
+
 int predict_singleton(int A[], int *B, int current)
 {
-    int indices[4] = {A[0], A[1], A[3], current};
+    int indices[4] = {A[0], A[1], *B, current};
     int count = QCOUNT(1, indices);
 
     switch (count)
     {
     case 2:
-        return -1;
-    case 4:
         return 1;
-    // Invalid cases
     case 0:
-        return -5;
+        return -1;
+    // Invalid cases
     default:
-        return -5;
+        return -7;
     }
 }
 
@@ -34,7 +43,7 @@ int predict_pair(int A[], int *B, int current)
         return 2;
     // Invalid cases
     default:
-        return -5;
+        return -7;
     }
 }
 
@@ -54,62 +63,79 @@ int determine_hard_triplet(int A[], int *B, int current, int max, int *firstTrip
             switch (count)
             {
             case 0: // A
-                break; // Must be in state AAB
+                set_A(A, current);
+                break; // AAB
             case 2: // B
-                *B = current; // Could be in AAB or BBB
+                *B = current; // AAB or BBB
                 break;
             default:
-                return -5; // Error
+                return -7; // Error
             }
 
             switch (count2)
             {
             case 0: // A
+                set_A(A, current + 1);
                 if (count != 2)
-                    *B = current + 2; // Must be in state AAB
+                    *B = current + 2; // AAB
                 return 1;
             case 2: // B
                 *B = current + 1;
-                if (count == 0) // AAB
+                if (count == 0) // ABA
+                {
+                    set_A(A, current + 2);
                     return 1;
+                }
                 else            // BBB
                     return -3;
             default:
-                return -5; // Error
+                return -7; // Error
             }
+            break;
+
         case 2:
+        {
             int result = 0;
             switch (count)
             {
             case 2: // A
-                break; // Must be in state AAB
+                set_A(A, current);
+                break; // AAB
             case 0: // B
             case 4: // B
-                *B = current; // Could be in AAB or BBB
+                *B = current; // AAB or BBB
                 break;
             default:
-                return -5; // Error
+                return -7; // Error
             }
 
             switch (count2)
             {
             case 2: // A
-                if (count != 2)
-                    *B = current + 2; // Must be in state AAB
+                set_A(A, current + 1);
+                if (count == 2) // Got A previously
+                    *B = current + 2; // AAB
+                else
+                    set_A(A, current + 2);
                 result = 1;
+                break;
             case 0: // B
             case 4: // B
                 *B = current + 1;
-                if (count == 0) // AAB
-                    result = 1;
+                if (count == 0) // ABA
+                {
+                    set_A(A, current + 2);
+                    return 1;
+                }
                 else            // BBB
                     result = -3;
+                break;
             default:
-                return -5; // Error
+                return -7; // Error
             }
 
             // Add on the result of calculating firstIndex's state
-            indices[3] = current + 1;
+            indices[3] = *B;
             int count3 = QCOUNT(1, indices);
             switch (count3)
             {
@@ -117,34 +143,48 @@ int determine_hard_triplet(int A[], int *B, int current, int max, int *firstTrip
                 return result + 1;
             case 4: // BBB
                 return result - 3;
+            default:
+                return -7;
             }
+            break;
+        }
+
         case 4:
             switch (count)
             {
             case 4: // A
-                break; // Must be in state AAB
+                set_A(A, current);
+                break; // AAB or ABA
             case 2: // B
-                *B = current; // Could be in AAB or BBB
+                *B = current; // BAA or BBB
                 break;
             default:
-                return -5; // Error
+                return -7; // Error
             }
 
             switch (count2)
             {
             case 4: // A
+                set_A(A, current + 1);
                 if (count != 2)
                     *B = current + 2;
                 return 1;
             case 2: // B
                 *B = current + 1;
-                if (count == 0) // AAB
+                if (count == 0) // ABA
+                {
+                    set_A(A, current + 2);
                     return 1;
+                }
                 else            // BBB
                     return -3;
             default:
-                return -5; // Error
+                return -7; // Error
             }
+            break;
+
+        default:
+            return -7;
         }
     }
     else
@@ -154,11 +194,12 @@ int determine_hard_triplet(int A[], int *B, int current, int max, int *firstTrip
         switch (count)
         {
         case 0: // AAB
+            // TODO keep track of AAB-tuples
             return 1;
         case 4: // BBB
             return -3;
         default:
-            return -5;
+            return -7;
         }
     }
 }
@@ -175,7 +216,7 @@ int predict_triplet(int A[], int *B, int current, int max, int *firstTriplet)
     int indices[4] = {A[0], current, current + 1, current + 2};
     int count = QCOUNT(1, indices);
 
-    if (*firstTriplet == -5)
+    if (*firstTriplet == -7)
     {
         *firstTriplet = count;
         if (count == 2)
@@ -184,18 +225,19 @@ int predict_triplet(int A[], int *B, int current, int max, int *firstTriplet)
 
     switch (count)
     {
-    case 0:
+    case 0: // ABB
+        // TODO keep track of ABB-tuples
         return -1;
-    case 2:
+    case 2: // BBB or AAB
         return determine_hard_triplet(A, B, current, max, firstTriplet);
-    case 4:
+    case 4: // AAA
         A[1] = current;
         A[2] = current + 1;
         return 3;
     default:
         printf("Error: QCOUNT passed erroneous input: index = [ %d, %d, %d, %d]",
             indices[0], indices[1], indices[2], indices[3]);
-        return -5;
+        return -7;
     }
 }
 
@@ -204,7 +246,7 @@ int mysub(int n)
     int A[3] = {1, -1, -1};
     int B = -1;
 
-    int firstTriplet = -5;
+    int firstTriplet = -7;
     int count = predict_triplet(A, &B, 2, n, &firstTriplet);
 
     for (int i = 5; i <= n; i += 3)
@@ -214,7 +256,7 @@ int mysub(int n)
             break;
 
         int result = predict_triplet(A, &B, i, n, &firstTriplet);
-        if (result < -4)
+        if (result < -6)
             return -1;
 
         count += result;
