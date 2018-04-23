@@ -1,9 +1,9 @@
 #include <stdio.h>
 #define MAXN 10000
 #include "QCOUNT.c"
-#include "mysub.c"
+#include "mysub.h"
 
-main(){
+main() {
 	int N[] = {20,200,2000,17,18,19,0};
 	int n,ct,loop,round,answer,total,biggest,errflag;
 #define NLOOP 10000

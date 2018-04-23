@@ -1,10 +1,10 @@
 TARGET = project
-LIBS = -lm
-CC = gcc
-CFLAGS = -g -Wall -Wextra
+LIBS =
+CC = gcc-7
+CFLAGS = -Wall -Wextra -g
 
-HEADERS =
-OBJECTS = MAIN.c
+HEADERS = triplet.h find.h mysub.h
+OBJECTS = triplet.c find.c mysub.c MAIN.c
 
 default: $(TARGET)
 all: default
@@ -13,7 +13,7 @@ all: default
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@
+	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@ -pg
 
 clean:
 	-rm -f *.o
