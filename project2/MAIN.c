@@ -2,15 +2,17 @@
 #define MAXN 10000
 #include "QCOUNT.c"
 #include "mysub.h"
+#include "perf.h"
 
 main() {
 	int N[] = {20,200,2000,17,18,19,0};
-	int n,ct,loop,round,answer,total,biggest,errflag;
+	int n,ct,loop,round,answer,total,biggest,smallest,errflag;
 #define NLOOP 10000
 
 	for (round = 0; N[round]>10; round++) {
 		n = N[round];
 		total = 0;
+		smallest = 2000;
 		biggest = -1;
 		errflag = 0;
 		for (loop=1; loop<=NLOOP; loop++) {
@@ -27,12 +29,15 @@ main() {
 				errflag = 1;
 				break;
 			}
+            if (ct<smallest) smallest=ct;
 			if (ct>biggest) biggest=ct;
 			total += ct;
 		}
 		if (errflag==0)
-		printf("n=%5d,   max=%6d,   avg=%8.2f\n",
-			n,biggest,total/(1.*NLOOP));
+		printf("n=%5d,   min=%4d,   max=%5d,   avg=%7.2f\n",
+			n,smallest,biggest,total/(1.*NLOOP));
 		fflush(stdout);
 	}
+
+    print_count();
 }

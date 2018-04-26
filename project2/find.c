@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "find.h"
+#include "perf.h"
 
 void set_A(int A[], int element)
 {
@@ -16,6 +17,7 @@ void set_A(int A[], int element)
 
 int find(int A[], int *B)
 {
+    inc_find();
     assert(!(A[1] != -1 && A[2] != -1 && *B != -1)); // Unnecessary?
     int current;
     int result = -1;

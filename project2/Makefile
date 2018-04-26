@@ -3,8 +3,8 @@ LIBS =
 CC = gcc-7
 CFLAGS = -Wall -Wextra -g
 
-HEADERS = triplet.h find.h mysub.h
-OBJECTS = triplet.c find.c mysub.c MAIN.c
+HEADERS = perf.h triplet.h find.h mysub.h
+OBJECTS = perf.c triplet.c find.c mysub.c MAIN.c
 
 default: $(TARGET)
 all: default

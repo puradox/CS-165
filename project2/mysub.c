@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "mysub.h"
+#include "perf.h"
 
 // Predict the first triplet, which is either AAB or ABA or BAA or BBB.
 // Only called with there is no B, which means all triplets were
@@ -78,10 +79,10 @@ triplet predict_singleton_with_AB(int A[], int *B, int current) // 1 query
     }
 }
 
-triplet predict_pair(int A[], int *B, int current) // 1 query
+triplet predict_pair(int A[], int *B, int current) // 1-3 queries
 {
     if (A[1] == -1)
-        find(A, B);
+        find(A, B); // 1-2 queries
 
     assert(A[1] != -1);
 
@@ -92,10 +93,13 @@ triplet predict_pair(int A[], int *B, int current) // 1 query
     switch (count)
     {
     case 0: // BB
+        *B = current;
         return make_pair(-2, current);
     case 2: // AB or BA
         return make_pair(0, current);
     case 4: // AA
+        set_A(A, current);
+        set_A(A, current + 1);
         return make_pair(2, current);
     default:
         return make_error();
@@ -264,6 +268,7 @@ triplet predict_triplet(int A[], int *B, int current, triplet *first)
     case 0: // ABB or BAB or BBA
         return make_triplet(-1, current);
     case 2: // AAB or ABA or BAA or BBB
+        inc_triplet_hard();
         return determine_hard_triplet(A, B, current, first);
     case 4: // AAA
         A[1] = current;
@@ -287,7 +292,7 @@ int mysub(int n)
     assert_triplet(first);
     count += first.count;
 
-    for (int i = 5; i <= n; i += 3)
+    for (int i = 5; i <= n;)
     {
         int leftover = n - i + 1;
 
@@ -326,11 +331,23 @@ int mysub(int n)
         triplet result;
 
         if (leftover == 1)
+        {
+            inc_singleton();
             result = predict_singleton(A, &B, i);
-        else if (leftover == 2)
+            i += 1;
+        }
+        else if (leftover == 2 || A[1] != -1)
+        {
+            inc_pair();
             result = predict_pair(A, &B, i);
+            i += 2;
+        }
         else
+        {
+            inc_triplet();
             result = predict_triplet(A, &B, i, &first);
+            i += 3;
+        }
 
         assert_triplet(result);
         count += result.count;
