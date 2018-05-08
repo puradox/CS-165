@@ -352,26 +352,12 @@ int calculate_final_two(int A[], int *B, int count, int n)
 
 int calculate_final_one(int A[], int *B, int n)
 {
-<<<<<<< HEAD
     int indices[4] = {A[0], A[1], A[2], n};
     if (QCOUNT(1, indices) == 4)
         return A[0];
     else
         return *B;
 }
-=======
-    int A[3] = {1, -1, -1};
-    int B = -1;
-    int count = 1;
-
-    inc_mysub();
-    store_AAB = make_store((n - 1) / 3);
-    store_ABB = make_store((n - 1) / 3);
-
-    triplet first = predict_triplet(A, &B, 2, (triplet *)0);
-    assert_triplet(first);
-    count += first.count;
->>>>>>> db5f67c8aa4fc206739b9cf8ed8a159f9ece8f21
 
 void search_for_AB(int A[], int *B, int zero, int twos[], int numTwos)
 {
@@ -384,7 +370,6 @@ void search_for_AB(int A[], int *B, int zero, int twos[], int numTwos)
             int result = QCOUNT(1, indices);
             switch (result)
             {
-<<<<<<< HEAD
             case 4:
                 if (A[1] == -1)
                     A[1] = two + 2;
@@ -438,28 +423,6 @@ void search_for_AB(int A[], int *B, int zero, int twos[], int numTwos)
                 default:
                     printf("Error: QCOUNT called with incorrect indices.\n");
                 }
-=======
-                inc_early_stop();
-                break;
-            }
-
-            // Chances are the first triplet is not -3 (BBB)
-            // Double down on the stats. Take the win 75% of the time.
-            if (count > leftover)
-            {
-                first = predict_first(A, &B);
-                assert_triplet(first);
-                count += first.count;
-            }
-        }
-
-        // Early stop
-        if (first.accountedFor)
-        {
-            if (count > leftover || count < -leftover)
-            {
-                inc_early_stop();
->>>>>>> db5f67c8aa4fc206739b9cf8ed8a159f9ece8f21
                 break;
             case 0:
                 indices[0] = two;
