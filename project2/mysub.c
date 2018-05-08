@@ -285,6 +285,7 @@ int mysub(int n)
     int B = -1;
     int count = 1;
 
+    inc_mysub();
     store_AAB = make_store((n - 1) / 3);
     store_ABB = make_store((n - 1) / 3);
 
@@ -306,6 +307,7 @@ int mysub(int n)
             // Does the first triplet not matter?
             if (count > leftover + 3 || count < -leftover - 1)
             {
+                inc_early_stop();
                 break;
             }
 
@@ -324,6 +326,7 @@ int mysub(int n)
         {
             if (count > leftover || count < -leftover)
             {
+                inc_early_stop();
                 break;
             }
         }
