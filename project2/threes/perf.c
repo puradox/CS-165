@@ -3,6 +3,8 @@
 
 void init_count()
 {
+    COUNT_MYSUB = 0;
+    COUNT_EARLY_STOP = 0;
     COUNT_TOTAL = 0;
     COUNT_TRIPLET = 0;
     COUNT_TRIPLET_HARD = 0;
@@ -13,21 +15,29 @@ void init_count()
 void print_count()
 {
     printf("\n%d total\n", COUNT_TOTAL);
-    printf(" |-> %d triplets\n", COUNT_TRIPLET);
-    printf(" |-> %d hard triplets\n", COUNT_TRIPLET_HARD);
+    printf(" |-> %d triplets (%d hard)\n", COUNT_TRIPLET, COUNT_TRIPLET_HARD);
     printf(" |-> %d pairs\n", COUNT_PAIR);
-    printf(" |-> %d singletons\n", COUNT_SINGLETON);
-    printf(" |-> %d find calls\n", COUNT_FIND);
+    printf(" |-> %d singletons\n\n", COUNT_SINGLETON);
+
+    printf("%d mysub calls\n", COUNT_MYSUB);
+    printf("%d early stops\n", COUNT_EARLY_STOP);
+    printf("%d find calls\n", COUNT_FIND);
 }
 
+int inc_mysub()
+{
+    return ++COUNT_MYSUB;
+}
+int inc_early_stop()
+{
+    return ++COUNT_EARLY_STOP;
+}
 int inc_find()
 {
-    ++COUNT_TOTAL;
     return ++COUNT_FIND;
 }
 int inc_triplet_hard()
 {
-    ++COUNT_TOTAL;
     return ++COUNT_TRIPLET_HARD;
 }
 int inc_triplet()
