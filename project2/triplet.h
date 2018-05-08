@@ -25,6 +25,7 @@ typedef struct
     int cursor;
     int tail;
     int head;
+    int size;
     int capacity;
     triplet *triplets;
 } triplet_store;

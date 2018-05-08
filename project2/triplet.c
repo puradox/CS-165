@@ -49,6 +49,7 @@ triplet_store *make_store(int size)
     triplet_store *s = malloc(sizeof(triplet_store));
     s->tail = 0;
     s->head = 0;
+    s->size = 0;
     s->capacity = size;
     s->triplets = malloc(sizeof(triplet) * size);
     return s;
@@ -62,10 +63,7 @@ void free_store(triplet_store *s)
 
 int store_sizeof(triplet_store *s)
 {
-    int count = (s->head - s->tail + 1);
-    if (count <= 0)
-        count += s->capacity;
-    return count;
+    return s->size;
 }
 
 triplet store_push(triplet_store *s, triplet t)
@@ -74,6 +72,7 @@ triplet store_push(triplet_store *s, triplet t)
     assert(store_sizeof(s) <= s->capacity);
     s->triplets[s->head] = t;
     s->head = (s->head + 1) % s->capacity;
+    s->size++;
     return t;
 }
 
@@ -82,5 +81,6 @@ triplet store_pop(triplet_store *s)
     assert(store_sizeof(s) > 0);
     triplet result = s->triplets[s->tail];
     s->tail = (s->tail + 1) % s->capacity;
+    s->size--;
     return result;
 }
