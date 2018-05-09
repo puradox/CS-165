@@ -51,8 +51,7 @@ int QCOUNT(int arg1, ...) {
 			}
 			printf("    %3d\n",ct);
 		}
-		printf("OneCount = %d, ZeroCount = %d, AnswerValue = %d\n",
-               OneCount, lim - OneCount, AnswerValue);
+		printf("OneCount = %d, AnswerValue = %d\n",OneCount,AnswerValue);
 		return(0);
 	}
 	if (arg1== -2) { debug = 0; return(0); }
