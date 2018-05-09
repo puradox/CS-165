@@ -405,43 +405,39 @@ void search_for_B_in_two(int A[], int *B, int two)
     int result = QCOUNT(1, indices);
     switch (result)
     {
+    case 4: // AAAB
+        set_A(A, two + 1);
+        set_A(A, two + 2);
+        set_B(B, two + 3);
+        break;
+    case 0: // BBAB, BABB, ABBB
+        set_B(B, two + 3);
+        break;
     case 2: // BBBA, AABA, ABAA, BAAA
         set_A(A, two + 3);
         indices[3] = two + 3;
         result = QCOUNT(1, indices);
         switch (result)
         {
+        case 0: // BBBA
+            set_B(B, two);
         case 4: // AABA
             set_A(A, two + 1);
             set_B(B, two + 2);
             break;
-        case 0: // BBBA, ABAA, BAAA
+        case 2: // ABAA, BAAA
+            set_A(A, two + 2);
             indices[2] = two + 2;
             result = QCOUNT(1, indices);
             switch (result)
             {
-            case 0: // BBBA
-                set_B(B, two + 2);
+            case 4: // ABAA
+                set_A(A, two);
+                set_B(B, two + 1);
                 break;
-            case 4: // AABA
+            case 2: // BAAA
+                set_B(B, two);
                 set_A(A, two + 1);
-                set_B(B, two + 2);
-                break;
-            case 2: // ABAA, BAAA
-                set_A(A, two + 2);
-                indices[2] = two + 2;
-                result = QCOUNT(1, indices);
-                switch (result)
-                {
-                case 4: // ABAA
-                    set_B(B, two + 1);
-                    break;
-                case 2: // BAAA
-                    set_B(B, two);
-                    break;
-                default:
-                    abort();
-                }
                 break;
             default:
                 abort();
@@ -450,14 +446,6 @@ void search_for_B_in_two(int A[], int *B, int two)
         default:
             abort();
         }
-        break;
-    case 4: // AAAB
-        set_A(A, two + 1);
-        set_A(A, two + 2);
-        set_B(B, two + 3);
-        break;
-    case 0: // BBAB, BABB, ABBB
-        set_B(B, two + 3);
         break;
     default:
         abort();
@@ -473,18 +461,18 @@ void search_for_B_in_zero(int A[], int *B, int zero)
     case 2: // BAAB, AABB, ABAB
         set_B(B, zero + 3);
         break;
-    case 0: // BBAA, BABA, ABBA
+    case 0: // BAAB, AABB, ABAB
         set_A(A, zero + 3);
         indices[3] = zero + 3;
         int result = QCOUNT(1, indices);
         switch (result)
         {
-        case 0: // BABA, ABBA
+        case 0: // BBAA
             set_B(B, zero + 1);
+            set_A(B, zero + 2);
             break;
-        case 2: // BBAA
-            set_B(B, zero + 1);
-            set_A(A, zero + 2);
+        case 2: // BABA, ABBA
+            set_B(B, zero + 2);
             break;
         default:
             abort();
