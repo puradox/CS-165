@@ -15,10 +15,6 @@ main(){
 		biggest = -1;
 		errflag = 0;
 		for (loop=1; loop<=NLOOP; loop++) {
-            if (n == 18 && loop == 18)
-            {
-                printf("Hello\n");
-            }
 			QCOUNT(0,n);
 			answer = mysub( n );
 			if (answer<0) {

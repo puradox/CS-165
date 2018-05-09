@@ -43,6 +43,9 @@ int consider_final_one(int A[], int *B, int n);
 // Find an instance of A.
 void search_for_A(int A[], int *B, int zero, int twos[], int numTwos);
 
+// Find two instances of A.
+void search_for_AA(int A[], int *B, int zero, int twos[], int numTwos);
+
 // Find instances of A and B for further calculations.
 void search_for_B(int A[], int *B, int zero, int twos[], int numTwos);
 
@@ -165,9 +168,9 @@ int mysub(int n)
         count += consider_final_two(A, B, n);
         break;
     case 1:
-        if (A[1] == -1)
-            search_for_A(A, B, zero, twos, numTwos);
-        if (A[2] == -1)
+        if (A[1] == -1 && A[2] == -1)
+            search_for_AA(A, B, zero, twos, numTwos);
+        else if (A[2] == -1)
             search_for_A(A, B, zero, twos, numTwos);
 
         count += consider_final_one(A, B, n);
@@ -376,7 +379,7 @@ void search_for_A_in_zero(int A[], int *B, int zero)
     case 2: // BAAB, AABB, ABAB
         set_B(B, zero + 3);
         indices[3] = *B;
-        int result = QCOUNT(1, indices);
+        result = QCOUNT(1, indices);
         switch (result)
         {
         case 0: // BAAB, ABAB
@@ -402,6 +405,92 @@ void search_for_A(int A[], int *B, int zero, int twos[], int numTwos)
     else
         search_for_A_in_two(A, B, twos[numTwos - 1]);
 }
+
+void search_for_AA_in_zero(int A[], int *B, int zero)
+{
+    int indices[4] = {A[0], zero, zero+1, zero+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
+    {
+    case 0: // BBAA, BABA, ABBA
+        set_A(A, zero + 3);
+        indices[3] = zero + 3;
+        result = QCOUNT(1, indices);
+        switch (result)
+        {
+        case 0: // BBAA
+            set_B(B, zero + 1);
+            set_A(A, zero + 2);
+            break;
+        case 2: // BABA, ABBA
+            set_B(B, zero + 2);
+            indices[2] = *B;
+            result = QCOUNT(1, indices);
+            switch (result)
+            {
+            case 0: // BABA
+                set_A(A, zero + 1);
+                break;
+            case 2: // ABBA
+                set_A(A, zero);
+                break;
+            default:
+                abort();
+            }
+            break;
+        default:
+            abort();
+        }
+        break;
+    case 2: // BAAB, AABB, ABAB
+        set_B(B, zero + 3);
+        indices[3] = *B;
+        result = QCOUNT(1, indices);
+        switch (result)
+        {
+        case 0: // BAAB, ABAB
+            set_A(A, zero + 2);
+            indices[2] = zero + 2;
+            result = QCOUNT(1, indices);
+            switch (result)
+            {
+            case 0: // BAAB
+                set_A(A, zero + 1);
+                break;
+            case 2: // ABAB
+                set_A(A, zero);
+                break;
+            default:
+                abort();
+            }
+            break;
+        case 2: // AABB
+            set_A(A, zero);
+            set_A(A, zero + 1);
+            break;
+        default:
+            abort();
+        }
+        break;
+    default:
+        abort();
+    }
+}
+
+void search_for_AA(int A[], int *B, int zero, int twos[], int numTwos)
+{
+    if (zero != -1)
+        search_for_AA_in_zero(A, B, zero);
+    else
+        search_for_A_in_two(A, B, twos[numTwos - 1]);
+
+    if (A[2] == -1)
+    {
+        assert(numTwos > 1);
+        search_for_A_in_two(A, B, twos[numTwos - 2]);
+    }
+}
+
 
 void search_for_B_in_two(int A[], int *B, int two)
 {
@@ -468,12 +557,12 @@ void search_for_B_in_zero(int A[], int *B, int zero)
     case 0: // BAAB, AABB, ABAB
         set_A(A, zero + 3);
         indices[3] = zero + 3;
-        int result = QCOUNT(1, indices);
+        result = QCOUNT(1, indices);
         switch (result)
         {
         case 0: // BBAA
             set_B(B, zero + 1);
-            set_A(B, zero + 2);
+            set_A(A, zero + 2);
             break;
         case 2: // BABA, ABBA
             set_B(B, zero + 2);
