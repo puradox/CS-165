@@ -1,8 +1,17 @@
 // mysub.h
 
+#include <assert.h>
+#include <stdlib.h>
+
 // Main function. Takes number of elements as input and outputs an index of the
 // majority class.
 int mysub(int n);
+
+// Sets A in the next available space.
+void set_A(int A[], int value);
+
+// Sets B in the next available space.
+void set_B(int *B, int value);
 
 // Find the identity of two sets that evaluated as fours.
 // Takes 0.5 queries per quad
@@ -19,20 +28,23 @@ int consider_single_two(int A[], int *B, int set);
 // Calculate the result based on our stored information.
 int calculate_result(int A[], int *B, int count);
 
-// Calculate the result knowing it depends on the final three indices.
+// Find the identify of the final three elements.
 // Takes 1-2 queries
-int calculate_final_three(int A[], int *B, int count, int n);
+int consider_final_three(int A[], int *B, int n, int zero, int *twos, int numTwos);
 
 // Calculate the result knowing it depends on the final three indices.
 // Takes 1 query
-int calculate_final_two(int A[], int *B, int count, int n);
+int consider_final_two(int A[], int *B, int n);
 
 // Calculate the result knowing it depends on the final three indices.
 // Takes 1 query
-int calculate_final_one(int A[], int *B, int n);
+int consider_final_one(int A[], int *B, int n);
+
+// Find an instance of A.
+void search_for_A(int A[], int *B, int zero, int twos[], int numTwos);
 
 // Find instances of A and B for further calculations.
-void search_for_AB(int A[], int *B, int zero, int twos[], int numTwos);
+void search_for_B(int A[], int *B, int zero, int twos[], int numTwos);
 
 // END mysub.h
 
@@ -52,7 +64,7 @@ int mysub(int n)
     *B = -1;
 
     // We need to count the number of uncalculated elements.
-    int remaining = n;
+    int remaining = n - 1;
 
     // We need to keep track of all of the fours and twos. Here we decide to use
     // the starting index of each quad for tracking.
@@ -65,7 +77,7 @@ int mysub(int n)
     int zero = -1;
 
     // First, let's classify each quad.
-    for (int i = 1; i < n - 2; i += 4)
+    for (int i = 2; i < n - 2; i += 4)
     {
         int indices[4] = {i, i+1, i+2, i+3};
         int result = QCOUNT(1, indices);
@@ -85,73 +97,43 @@ int mysub(int n)
             break;
         default:
             printf("Error: QCOUNT called with incorrect indices.\n");
-            return -1;
+            abort();
         }
     }
 
-    // Now that each quad is classified, we need to keep track of two extra
-    // values: the total count calculated as numOfA - numOfB, and the maximum
-    // swing in count possible with our uncalculated quads.
-    int count = 0;
-    int maxSwing = 4*numFours + 2*numTwos;
+    // Each quad is now classified, moving onto evaluation of 4's and 2's
+    int count = 1; // number of A's - number of B's, starting with index 1 being A
+    int maxSwing = 4*numFours + 2*numTwos + ((n - 1) % 4); // number of elements unaccounted for
 
     // We start with fours since they require the lowest number of comparisons.
-    if (numFours == 1)
+    for (int i = 0; numFours > 0;)
     {
-        count += consider_single_four(A, B, fours[0]);
-        remaining -= 4;
-        maxSwing -= 4;
+        if (numFours == 1 || A[1] == -1)
+        {
+            count += consider_single_four(A, B, fours[i]);
+            remaining -= 4;
+            maxSwing -= 4;
+            numFours--;
+            i++;
+        }
+        else
+        {
+            count += consider_fours(A, B, fours[i], fours[i+1]);
+            remaining -= 8;
+            maxSwing -= 8;
+            numFours -= 2;
+            i += 2;
+        }
 
         // Check if we should stop early.
         int absCount = count > 0 ? count : -count;
         if (absCount > remaining || maxSwing < absCount)
         {
-            if (*B == -1)
-                search_for_AB(A, B, zero, twos, numTwos);
+            if (count < 0 && *B == -1)
+                search_for_B(A, B, zero, twos, numTwos);
             return calculate_result(A, B, count);
         }
     }
-    else if (numFours > 1)
-    {
-        int excess = numFours % 2; // Check if there's an odd man out
-        
-        // Calculate pairs
-        for (int i = 0; i+1 < numFours; i += 2)
-        {
-            count += consider_fours(A, B, fours[i], fours[i+1]);
-            remaining -= 8;
-            maxSwing -= 8;
-
-            // Check if we should stop early.
-            int absCount = count > 0 ? count : -count;
-            if (absCount > remaining || maxSwing < absCount)
-            {
-                if (*B == -1)
-                    search_for_AB(A, B, zero, twos, numTwos);
-                return calculate_result(A, B, count);
-            }
-        }
-
-        // Check for odd man out and calculate if necessary
-        if (excess == 1)
-        {
-            count += consider_single_four(A, B, fours[numFours - 1]);
-            remaining -= 4;
-            maxSwing -= 4;
-
-            // Check if we should stop early.
-            int absCount = count > 0 ? count : -count;
-            if (absCount > remaining || maxSwing < absCount)
-            {
-                if (*B == -1)
-                    search_for_AB(A, B, zero, twos, numTwos);
-                return calculate_result(A, B, count);
-            }
-        }
-    }
-
-    if (twos[0] == 1 && *B == -1)
-        search_for_AB(A, B, zero, twos, numTwos);
 
     // Next, we calculate twos.
     for (int i = 0; i < numTwos; i++)
@@ -164,139 +146,115 @@ int mysub(int n)
         int absCount = count > 0 ? count : -count;
         if (absCount > remaining || maxSwing < absCount)
         {
-            if (*B == -1)
-                search_for_AB(A, B, zero, twos, numTwos);
+            if (count < 0 && *B == -1)
+                search_for_B(A, B, zero, twos, numTwos);
             return calculate_result(A, B, count);
         }
     }
 
     // Finally, we calculate the last few values.
-    search_for_AB(A, B, zero, twos, numTwos);
     switch (remaining)
     {
     case 3:
-        return calculate_final_three(A, B, count, n);
+        count += consider_final_three(A, B, n, zero, twos, numTwos);
+        break;
     case 2:
-        return calculate_final_two(A, B, count, n);
+        if (A[1] == -1)
+            search_for_A(A, B, zero, twos, numTwos);
+        count += consider_final_two(A, B, n);
     case 1:
-        return calculate_final_one(A, B, n);
+        if (A[1] == -1)
+            search_for_A(A, B, zero, twos, numTwos);
+        if (A[2] == -1)
+            search_for_A(A, B, zero, twos, numTwos);
+        count += consider_final_one(A, B, n);
     case 0:
-        return 0;
+        break;
     default:
         printf("Error: remainder not in bounds 4 > x => 0.\n");
+        abort();
     }
 
-    // We should never get here.
-    return -1;
+    if (count < 0 && *B == -1)
+        search_for_B(A, B, zero, twos, numTwos);
+    return calculate_result(A, B, count);
+}
+
+void set_A(int A[], int value)
+{
+    if (A[1] == value)
+        return;
+    if (A[2] == value)
+        return;
+
+    if (A[1] == -1)
+        A[1] = value;
+    else if (A[2] == -1)
+        A[2] = value;
+}
+
+void set_B(int *B, int value)
+{
+    if (*B == -1)
+        *B = value;
 }
 
 int consider_fours(int A[], int *B, int firstSet, int secondSet)
 {
-    // Fill in A and B if possible
-    if (A[1] == -1)
+    int indices[4] = {A[0], A[1], firstSet, secondSet};
+    int result = QCOUNT(1, indices);
+    switch (result)
     {
-        A[0] = firstSet;
-        A[1] = firstSet + 1;
-        A[2] = firstSet + 2;
-        
-        int indices[4] = {A[0], A[1], A[2], secondSet};
-        if (QCOUNT(1, indices) == 4)
-            return 8;
-        else
-        {
-            *B = secondSet;
-            return 0;
-        }
-    }
-    else
-    {
-        int indices[4] = {A[0], A[1], firstSet, secondSet};
-        int result = QCOUNT(1, indices);
-        switch (result)
-        {
-        case 4:
-            return 8;
-        case 2:
-            return 0;
-        case 0:
-            if (*B == -1)
-                *B = firstSet;
-            return -8;
-        default:
-            printf("Error: QCOUNT called with incorrect indices.\n");
-            return -1;
-        }
+    case 4:
+        return 8;
+    case 2:
+        return 0;
+    case 0:
+        set_B(B, firstSet);
+        return -8;
+    default:
+        printf("Error: QCOUNT called with incorrect indices.\n");
+        abort();
     }
 }
 
 int consider_single_four(int A[], int *B, int set)
 {
-    // Fill in A if possible
-    if (A[1] == -1)
+    int indices[4] = {A[0], set, set+1, set+2};
+    switch (QCOUNT(1, indices))
     {
-        A[0] = set;
-        A[1] = set + 1;
-        A[2] = set + 2;
-
+    case 4:
+        A[1] = set;
+        A[2] = set + 1;
         return 4;
-    }
-    else
-    {
-        int indices[4] = {A[0], A[1], A[2], set};
-        if (QCOUNT(1, indices) == 4)
-            return 4;
-        else
-        {
-            if (*B == -1)
-                *B = set;
-            return -4;
-        }
+    case 2:
+        *B = set;
+        return -4;
+    default:
+        printf("Error: QCOUNT called with incorrect indices.\n");
+        abort();
     }
 }
 
 int consider_single_two(int A[], int *B, int set)
 {
-    if (set == 1)
+    int indices[4] = {A[0], set, set+1, set+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
     {
-        int indices[4] = {*B, set, set+1, set+2};
-        int result = QCOUNT(1, indices);
-        switch (result)
-        {
-        case 4:
+    case 4:
+        return 2; // AAAB
+    case 2:
+        indices[1] = set + 3;
+        if (QCOUNT(1, indices) == 0)
             return -2; // BBBA
-        case 2:
-            indices[1] = set + 3;
-            if (QCOUNT(1, indices) == 0)
-                return 2; // AAAB
-            else
-                return -2;  // BBBA
-        case 0:
-            return 2; // AAAB
-        default:
-            printf("Error: QCOUNT called with incorrect indices.\n");
-            return -1;
-        }
-    }
-    else
-    {
-        int indices[4] = {A[0], set, set+1, set+2};
-        int result = QCOUNT(1, indices);
-        switch (result)
-        {
-        case 4:
-            return 2; // AAAB
-        case 2:
-            indices[1] = set + 3;
-            if (QCOUNT(1, indices) == 0)
-                return -2; // BBBA
-            else
-                return 2;  // AAAB
-        case 0:
-            return -2; // BBBA
-        default:
-            printf("Error: QCOUNT called with incorrect indices.\n");
-            return -1;
-        }
+        else
+            return 2;  // AAAB
+    case 0:
+        return -2; // BBBA
+    default:
+        printf("Error: QCOUNT called with incorrect indices.\n");
+        abort();
     }
 }
 
@@ -310,220 +268,239 @@ int calculate_result(int A[], int *B, int count)
         return 0;
 }
 
-int calculate_final_three(int A[], int *B, int count, int n)
+int consider_final_three(int A[], int *B, int n, int zero, int *twos, int numTwos)
 {
     int indices[4] = {A[0], n-2, n-1, n};
     int result = QCOUNT(1, indices);
     switch (result)
     {
     case 4:
-        return A[0];
+        return 3;
     case 2:
+        if (A[1] == -1)
+            search_for_A(A, B, zero, twos, numTwos);
         indices[1] = A[1];
-        if (QCOUNT(1, indices) == 0)
-            return *B;
-        else
-            return A[0];
+        return (QCOUNT(1, indices) == 0) ? -3 : 1;
     case 0:
-        return *B;
+        return -1;
     default:
         printf("Error: QCOUNT called with incorrect indices.\n");
-        return -1;
+        abort();
     }
 }
 
-int calculate_final_two(int A[], int *B, int count, int n)
+int consider_final_two(int A[], int *B, int n)
 {
     int indices[4] = {A[0], A[1], n-1, n};
     int result = QCOUNT(1, indices);
     switch (result)
     {
     case 4:
-        return A[0];
+        return 2;
     case 2:
         return 0;
     case 0:
-        return *B;
+        return -2;
     default:
         printf("Error: QCOUNT called with incorrect indices.\n");
-        return -1;
+        abort();
     }
 }
 
-int calculate_final_one(int A[], int *B, int n)
+int consider_final_one(int A[], int *B, int n)
 {
     int indices[4] = {A[0], A[1], A[2], n};
-    if (QCOUNT(1, indices) == 4)
-        return A[0];
-    else
-        return *B;
+    return (QCOUNT(1, indices) == 4) ? 1 : -1;
 }
 
-void search_for_AB(int A[], int *B, int zero, int twos[], int numTwos)
+void search_for_A_in_two(int A[], int *B, int two)
 {
-    int two = twos[numTwos - 1];
-    if (A[1] == -1 || *B == -1)
+    int indices[4] = {A[0], two, two+1, two+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
     {
-        if (zero == -1)
+    case 2: // BAAA, AABA, ABAA, BAAA
+        set_A(A, two + 3);
+        break;
+    case 4: // AAAB
+        set_A(A, two + 1);
+        set_A(A, two + 2);
+        set_B(B, two + 3);
+        break;
+    case 0: // BBAB, BABB, ABBB
+        set_B(B, two + 3);
+        indices[3] = *B;
+        result = QCOUNT(1, indices);
+        switch (result)
         {
-            int indices[4] = {A[0], two + 1, two + 2, two + 3};
-            int result = QCOUNT(1, indices);
+        case 2: // BBAB
+            set_A(A, two + 2);
+            break;
+        case 0: // BABB, ABBB
+            indices[2] = two + 2;
+            result = QCOUNT(1, indices);
             switch (result)
             {
-            case 4:
-                if (A[1] == -1)
-                    A[1] = two + 2;
-                if (A[2] == -1)
-                    A[2] = two + 3;
-                if (*B == -1)
-                    *B = two;
+            case 0: // ABBB
+                set_A(A, two);
                 break;
-            case 2:
-                indices[0] = two;
-                indices[1] = A[0];
+            case 2: // BABB
+                set_A(A, two+1);
+                break;
+            default:
+                abort();
+            }
+            break;
+        default:
+            abort();
+        }
+        break;
+    default:
+        abort();
+    }
+}
+
+void search_for_A_in_zero(int A[], int *B, int zero)
+{
+    int indices[4] = {A[0], zero, zero+1, zero+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
+    {
+    case 0: // BBAA, BABA, ABBA
+        set_A(A, zero + 3);
+        break;
+    case 2: // BAAB, AABB, ABAB
+        set_B(B, zero + 3);
+        indices[3] = *B;
+        int result = QCOUNT(1, indices);
+        switch (result)
+        {
+        case 0: // BAAB, ABAB
+            set_A(A, zero + 2);
+            break;
+        case 2: // AABB
+            set_A(A, zero);
+            set_A(A, zero + 1);
+            break;
+        default:
+            abort();
+        }
+        break;
+    default:
+        abort();
+    }
+}
+
+void search_for_A(int A[], int *B, int zero, int twos[], int numTwos)
+{
+    if (zero != -1)
+        search_for_A_in_zero(A, B, zero);
+    else
+        search_for_A_in_two(A, B, twos[numTwos - 1]);
+}
+
+void search_for_B_in_two(int A[], int *B, int two)
+{
+    int indices[4] = {A[0], two, two+1, two+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
+    {
+    case 2: // BBBA, AABA, ABAA, BAAA
+        set_A(A, two + 3);
+        indices[3] = two + 3;
+        result = QCOUNT(1, indices);
+        switch (result)
+        {
+        case 4: // AABA
+            set_A(A, two + 1);
+            set_B(B, two + 2);
+            break;
+        case 0: // BBBA, ABAA, BAAA
+            indices[2] = two + 2;
+            result = QCOUNT(1, indices);
+            switch (result)
+            {
+            case 0: // BBBA
+                set_B(B, two + 2);
+                break;
+            case 4: // AABA
+                set_A(A, two + 1);
+                set_B(B, two + 2);
+                break;
+            case 2: // ABAA, BAAA
+                set_A(A, two + 2);
+                indices[2] = two + 2;
                 result = QCOUNT(1, indices);
                 switch (result)
                 {
-                case 4:
-                    if (A[1] == -1)
-                        A[1] = two + 2;
-                    if (A[2] == -1)
-                        A[2] = two + 3;
-                    if (*B == -1)
-                        *B = two + 1;
+                case 4: // ABAA
+                    set_B(B, two + 1);
                     break;
-                case 2:
-                    indices[1] = two + 1;
-                    indices[2] = A[0];
-                    if (QCOUNT(1, indices) == 2)
-                    {
-                        if (A[1] == -1)
-                            A[1] = two;
-                        if (A[2] == -1)
-                            A[2] = two + 1;
-                        if (*B == -1)
-                            *B = two + 3;
-                    }
-                    else
-                    {
-                        if (A[1] == -1)
-                            A[1] = two;
-                        if (A[2] == -1)
-                            A[2] = two + 1;
-                        if (*B == -1)
-                            *B = two + 2;
-                    }
-                    break;
-                case 0:
-                    if (A[1] == -1)
-                        A[1] = two;
-                    if (*B == -1)
-                        *B = two + 1;
+                case 2: // BAAA
+                    set_B(B, two);
                     break;
                 default:
-                    printf("Error: QCOUNT called with incorrect indices.\n");
-                }
-                break;
-            case 0:
-                indices[0] = two;
-                indices[1] = A[0];
-                if (QCOUNT(1, indices) == 2)
-                {
-                    if (A[1] == -1)
-                        A[1] = two + 1;
-                    if (*B == -1)
-                        *B = two;
-                }
-                else
-                {
-                    indices[1] = two + 1;
-                    indices[2] = A[0];
-                    if (QCOUNT(1, indices) == 2)
-                    {
-                        if (A[1] == -1)
-                            A[1] = two + 2;
-                        if (*B == -1)
-                            *B = two;
-                    }
-                    else
-                    {
-                        if (A[1] == -1)
-                            A[1] = two + 3;
-                        if (*B == -1)
-                            *B = two;
-                    }
+                    abort();
                 }
                 break;
             default:
-                printf("Error: QCOUNT called with incorrect indices.\n");
+                abort();
             }
+            break;
+        default:
+            abort();
         }
-        else
-        {
-            int indices[4] = {A[0], zero + 1, zero + 2, zero + 3};
-            if (QCOUNT(1, indices) == 0)
-            {
-                if (A[1] == -1)
-                    A[1] = zero;
-                indices[0] = zero;
-                indices[1] = A[0];
-                if (QCOUNT(1, indices) == 0)
-                {
-                    if (A[2] == -1)
-                        A[2] = zero + 1;
-                    if (*B == -1)
-                        *B = zero + 2;
-                }
-                else
-                {
-                    if (*B == -1)
-                        *B = zero + 1;
-                    indices[1] = zero + 1;
-                    indices[2] = A[0];
-                    
-                    if (A[2] == -1)
-                    {
-                        if (QCOUNT(1, indices) == 0)
-                            A[2] = zero + 2;
-                        else
-                            A[2] = zero + 3;
-                    }
-                }
-            }
-            else
-            {
-                if (*B == -1)
-                    *B = zero;
-                indices[0] = zero;
-                indices[1] = A[0];
-                if (QCOUNT(1, indices) == 0)
-                {
-                    if (A[1] == -1)
-                        A[1] = zero + 1;
-                    indices[1] = zero + 1;
-                    indices[2] = A[0];
-
-                    if (A[2] == -1)
-                    {
-                        if (QCOUNT(1, indices) == 0)
-                            A[2] = zero + 2;
-                        else
-                            A[2] = zero + 3;
-                    }
-                }
-                else
-                {
-                    if (A[1] == -1)
-                        A[1] = zero + 2;
-                    if (A[2] == -1)
-                        A[2] = zero + 3;
-                }
-            }
-        }
+        break;
+    case 4: // AAAB
+        set_A(A, two + 1);
+        set_A(A, two + 2);
+        set_B(B, two + 3);
+        break;
+    case 0: // BBAB, BABB, ABBB
+        set_B(B, two + 3);
+        break;
+    default:
+        abort();
     }
+}
 
-    if (A[2] == -1 && numTwos > 1)
-        search_for_AB(A, B, zero, twos, numTwos - 1);
+void search_for_B_in_zero(int A[], int *B, int zero)
+{
+    int indices[4] = {A[0], zero, zero+1, zero+2};
+    int result = QCOUNT(1, indices);
+    switch (result)
+    {
+    case 2: // BAAB, AABB, ABAB
+        set_B(B, zero + 3);
+        break;
+    case 0: // BBAA, BABA, ABBA
+        set_A(A, zero + 3);
+        indices[3] = zero + 3;
+        int result = QCOUNT(1, indices);
+        switch (result)
+        {
+        case 0: // BABA, ABBA
+            set_B(B, zero + 1);
+            break;
+        case 2: // BBAA
+            set_B(B, zero + 1);
+            set_A(A, zero + 2);
+            break;
+        default:
+            abort();
+        }
+        break;
+    default:
+        abort();
+    }
+}
+
+void search_for_B(int A[], int *B, int zero, int twos[], int numTwos)
+{
+    if (zero != -1)
+        search_for_B_in_zero(A, B, zero);
+    else
+        search_for_B_in_two(A, B, twos[numTwos - 1]);
 }
 
 // END mysub.c

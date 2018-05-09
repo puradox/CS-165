@@ -3,7 +3,7 @@ LIBS =
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-HEADERS = 
+HEADERS =
 OBJECTS = MAIN.c
 
 default: $(TARGET)
@@ -12,7 +12,7 @@ all: default
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) QCOUNT.c mysub.c
 	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@ -pg
 
 clean:
