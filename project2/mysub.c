@@ -161,13 +161,17 @@ int mysub(int n)
     case 2:
         if (A[1] == -1)
             search_for_A(A, B, zero, twos, numTwos);
+
         count += consider_final_two(A, B, n);
+        break;
     case 1:
         if (A[1] == -1)
             search_for_A(A, B, zero, twos, numTwos);
         if (A[2] == -1)
             search_for_A(A, B, zero, twos, numTwos);
+
         count += consider_final_one(A, B, n);
+        break;
     case 0:
         break;
     default:
