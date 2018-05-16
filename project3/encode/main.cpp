@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        Config::usage();
+        config::usage();
         return 1;
     }
 
-    Config c;
+    config c;
 
     for (int i = 1; i < argc - 1; i++)
         if (c.parse(argv[i]) != 0)

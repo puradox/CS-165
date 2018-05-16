@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-struct Config
+struct config
 {
     // N - number of bits to encode window offset
     // Bounds: [9, 14]
@@ -20,7 +20,7 @@ struct Config
     static void usage();
 
     // Override how it looks when printed to the screen.
-    friend std::ostream& operator<<(std::ostream& os, const Config& c);
+    friend std::ostream& operator<<(std::ostream& os, const config& c);
 
     // Parse a parameter and set the cooresponding config value.
     int parse(std::string arg);

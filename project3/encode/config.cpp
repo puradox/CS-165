@@ -1,6 +1,6 @@
 #include "config.hpp"
 
-void Config::usage()
+void config::usage()
 {
     std::cout
         << "usage: LZ [-N] [-L] [-S] <filename>" << std::endl
@@ -9,13 +9,13 @@ void Config::usage()
         << "  -S=[1,5]   number of bits to encode length of literal string (default 3)" << std::endl;
 }
 
-std::ostream& operator<<(std::ostream& os, const Config& c)
+std::ostream& operator<<(std::ostream& os, const config& c)
 {
-    os << "Config { N=" << c.N << ", L=" << c.L << ", S=" << c.S << " }";
+    os << "config { N=" << c.N << ", L=" << c.L << ", S=" << c.S << " }";
     return os;
 }
 
-int Config::parse(std::string arg)
+int config::parse(std::string arg)
 {
     std::string param = arg.substr(1, 1);
     std::string value = arg.substr(3);
@@ -74,7 +74,7 @@ int Config::parse(std::string arg)
     else
     {
         std::cerr << "unknown option: " << arg << std::endl << std::endl;
-        Config::usage();
+        config::usage();
         return 22;
     }
 

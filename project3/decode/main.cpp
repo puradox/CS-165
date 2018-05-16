@@ -7,7 +7,7 @@
 
 int readInput(std::istream& in)
 {
-    Config c;
+    config c;
     std::string line;
 
     std::cout << c << std::endl;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
     if (argc > 2)
     {
-        Config::usage();
+        config::usage();
         return 7; // Argument list too long
     }
     else if (argc == 2)
