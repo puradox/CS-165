@@ -1,13 +1,18 @@
 TARGET = LZ
 LIBS =
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic -g
+CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
 HEADERS = config.hpp
 OBJECTS = config.cpp main.cpp
 
-default: $(TARGET)
-all: default
+all: debug
+
+debug: CXXFLAGS += -g
+debug: $(TARGET)
+
+release: CXXFLAGS += -O3
+release: $(TARGET)
 
 %.o: %.c $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
