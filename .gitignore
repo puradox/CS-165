@@ -1,6 +1,10 @@
 .vscode
 
-# Debug symbols
+# Binaries
 project
-project.*
-*.o
+LZ
+EXPAND
+
+# Debug symbols
+**.o
+**.dSYM
