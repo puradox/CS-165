@@ -3,8 +3,8 @@ LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = config.hpp
-OBJECTS = config.cpp main.cpp
+HEADERS = suffix_tree.hpp queue.hpp config.hpp
+OBJECTS = suffix_tree.o   queue.o   config.o   main.o
 
 all: debug
 
@@ -14,7 +14,7 @@ debug: $(TARGET)
 release: CXXFLAGS += -O3
 release: $(TARGET)
 
-%.o: %.c $(HEADERS)
+%.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
