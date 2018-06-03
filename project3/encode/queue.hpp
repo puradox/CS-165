@@ -28,10 +28,7 @@ class circular_queue
     void push(uint16_t value);
 
     // Pop processes a value from the queue.
-    circular_queue_node pop();
-
-    // Peek retrieves the next node in line.
-    circular_queue_node peek();
+    uint8_t pop();
 
     // Mark the previous node as the end of a match.
     void mark(suffix_tree *match);

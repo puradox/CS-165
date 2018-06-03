@@ -10,13 +10,12 @@ class suffix_tree
 {
   public:
     // Create a root node
-    suffix_tree()
-        : parent(nullptr), children(), value(""), position(0) {}
+    suffix_tree() : parent(nullptr), children(), value(""), position(0) {}
 
     // Clean up
     ~suffix_tree();
 
-    // Check if this node has a child with the first letter of the provided value
+    // Does this node has a child with the first letter of the specified value?
     bool has(char value);
 
     // Append to the value of this node

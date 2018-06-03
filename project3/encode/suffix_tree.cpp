@@ -37,12 +37,13 @@ suffix_tree *suffix_tree::expand(char key, uint16_t position)
 {
     assert(this->parent != nullptr);
     assert(this->value != "");
-    assert(this->value.length() > 0);
+    assert(this->count == 0);
 
     // Move the current node down to its children and append to its value
-    this->value.append(1, key);
+    this->append(key);
     suffix_tree *result = new suffix_tree(this, this->value.substr(1), this->position);
     this->children[this->value.at(1)] = result;
+    this->count++;
 
     // Update this node's value and position to represent the new node.
     this->value = this->value.at(0);
