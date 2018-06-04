@@ -1,12 +1,13 @@
+#include <stdexcept>
 #include "queue.hpp"
 
-void circular_queue::push(uint16_t value)
+void circular_queue::push(char value)
 {
     // Check for overflow
     if (this->size == this->capacity)
-        throw "circular_queue overflow";
+        throw std::overflow_error("circular_queue::push overflow");
 
-    // Clean old matches from the trie before overriding
+    // Clean old matches from the suffix_tree before overriding
     if (this->nodes[this->head].match != nullptr)
         delete this->nodes[this->head].match;
 
@@ -17,21 +18,21 @@ void circular_queue::push(uint16_t value)
     this->size++;
 }
 
-uint8_t circular_queue::pop()
+char circular_queue::pop()
 {
     // Check for underflow
     if (this->size == 0)
-        throw "circular_queue underflow";
+        throw std::underflow_error("circular_queue::pop underflow");
 
-    // Process the current character
-    uint8_t value = this->nodes[this->tail].value;
+    // Process the current character in the queue
+    char value = this->nodes[this->tail].value;
     this->tail = (this->tail + 1) % this->capacity;
     this->size--;
 
     return value;
 }
 
-void circular_queue::mark(suffix_tree* match)
+encode_output process()
 {
-    this->nodes[this->tail].match = match;
+
 }

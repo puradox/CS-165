@@ -4,6 +4,7 @@
 project
 LZ
 EXPAND
+test
 
 # Debug symbols
 **.o

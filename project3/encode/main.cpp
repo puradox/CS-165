@@ -28,24 +28,19 @@ int main(int argc, char *argv[])
 
     t0 = t.add('a', 0);
 
+    t0->append('b');
     t1 = t.add('b', 1);
-    t0->append('b');
 
-    t2 = t1->expand('b', 2);
-    std::swap(t1, t2);
-    t0->append('b');
-
-    t3 = t0->expand('a', 3);
-    std::swap(t0, t3);
+    t0->append('a');
     t1->append('a');
-    t4 = t2->add('a', 2);
+    t2 = t.add('a', 2);
 
     std::cout << t << std::endl;;
     std::cout << *t0 << std::endl;;
     std::cout << *t1 << std::endl;;
     std::cout << *t2 << std::endl;;
-    std::cout << *t3 << std::endl;;
-    std::cout << *t4 << std::endl;;
+    //std::cout << *t3 << std::endl;;
+    //std::cout << *t4 << std::endl;;
 
     return 0;
 }

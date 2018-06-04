@@ -13,7 +13,12 @@ suffix_tree::~suffix_tree()
 
 bool suffix_tree::has(char key)
 {
-    return this->children[key] != nullptr;
+    return this->get(key) != nullptr;
+}
+
+suffix_tree *suffix_tree::get(char key)
+{
+    return this->children[(uint8_t)key];
 }
 
 void suffix_tree::append(char key)
@@ -21,35 +26,54 @@ void suffix_tree::append(char key)
     assert(this->parent != nullptr);
     assert(this->value != "");
 
-    this->value.append(1, key);
+    if (this->count == 0) // no children
+    {
+        this->value.append(1, key);
+    }
+    else if (this->has(key))
+    {
+
+    }
+
 }
 
 suffix_tree *suffix_tree::add(char key, uint16_t position)
 {
-    assert(this->children[key] == nullptr);
+    if (this->has(key)) // non-unique key
+    {
+        // Keep a reference to the original node so we don't lose it
+        suffix_tree *original = this->get(key);
+        assert(original->value.length() > 1);
 
-    this->children[key] = new suffix_tree(this, std::string(1, key), position);
-    this->count++;
-    return this->children[key];
+        // Replace the orignal node with a new node
+        suffix_tree *added = new suffix_tree(this, key, position);
+        this->children[(uint8_t)key] = added;
+
+        // Add the original node as a child of the new node
+        original->value = original->value.substr(1); // cut off the expanded letter
+        added->add(original);
+        original->parent = added;
+    }
+    else // unique key
+    {
+        this->children[(uint8_t)key] = new suffix_tree(this, key, position);
+        this->count++;
+    }
+
+    return this->get(key);
 }
 
-suffix_tree *suffix_tree::expand(char key, uint16_t position)
+void suffix_tree::add(suffix_tree* node)
 {
-    assert(this->parent != nullptr);
-    assert(this->value != "");
-    assert(this->count == 0);
+    assert(this->get(node->value.at(0)) == nullptr);
 
-    // Move the current node down to its children and append to its value
-    this->append(key);
-    suffix_tree *result = new suffix_tree(this, this->value.substr(1), this->position);
-    this->children[this->value.at(1)] = result;
+    this->children[(uint8_t)node->value.at(0)] = node;
     this->count++;
+}
 
-    // Update this node's value and position to represent the new node.
-    this->value = this->value.at(0);
-    this->position = position;
-
-    return result;
+uint16_t suffix_tree::size()
+{
+    return this->count;
 }
 
 std::ostream & operator<< (std::ostream &out, suffix_tree const &t)
