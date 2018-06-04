@@ -1,20 +1,21 @@
 #pragma once
 
 #include <iostream>
+#include <cinttypes>
 
 struct config
 {
     // N - number of bits to encode window offset
     // Bounds: [9, 14]
-    int N = 11;
+    uint8_t N = 11;
 
     // L - number of bits to encode match offset
     // Bounds: [3, 4]
-    int L = 4;
+    uint8_t L = 4;
 
     // S - number of bits to encode length of literal string
     // Bounds: [1, 5]
-    int S = 3;
+    uint8_t S = 3;
 
     // Prints instructions on how to use this command.
     static void usage();
