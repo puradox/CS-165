@@ -28,6 +28,7 @@ release: CXXFLAGS += -O3
 release: $(TARGET)
 
 .PHONY: test
+test: CXXFLAGS += -g
 test: $(OBJECTS) $(TEST_OBJECTS)
 	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $(TEST_TARGET) -pg
 
