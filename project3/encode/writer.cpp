@@ -1,21 +1,26 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <cinttypes>
 #include <bitset>
 #include "writer.hpp"
 #include "config.hpp"
 
-void write(config conf, std::vector<encode_output> outputs) {
+void write(config conf, uint64_t inChars, std::vector<encode_output> outputs) {
     std::bitset<8> *buffer = new std::bitset<8>();
-    uint8_t counter = 0; // how many bits have been written
+    uint64_t outChars = 0;
+    uint8_t  counter  = 0; // how many bits have been written
 
     // Write N, L, and S to standard output
     *buffer = std::bitset<8>(conf.N);
     std::cout << (char*)buffer;
+    ++outChars;
     *buffer = std::bitset<8>(conf.L);
     std::cout << (char*)buffer;
+    ++outChars;
     *buffer = std::bitset<8>(conf.S);
     std::cout << (char*)buffer;
+    ++outChars;
 
     for (encode_output out : outputs) {
         if (out.length == 0) {
@@ -26,6 +31,7 @@ void write(config conf, std::vector<encode_output> outputs) {
                 if (counter >= 8) {
                     std::cout << (char*)buffer;
                     counter = 0;
+                    ++outChars;
                 }
             }
 
@@ -38,6 +44,7 @@ void write(config conf, std::vector<encode_output> outputs) {
                 if (counter >= 8) {
                     std::cout << (char*)buffer;
                     counter = 0;
+                    ++outChars;
                 }
             }
 
@@ -50,6 +57,7 @@ void write(config conf, std::vector<encode_output> outputs) {
                     if (counter >= 8) {
                         std::cout << (char*)buffer;
                         counter = 0;
+                        ++outChars;
                     }
                 }
             }
@@ -64,6 +72,7 @@ void write(config conf, std::vector<encode_output> outputs) {
                 if (counter >= 8) {
                     std::cout << (char*)buffer;
                     counter = 0;
+                    ++outChars;
                 }
             }
 
@@ -76,6 +85,7 @@ void write(config conf, std::vector<encode_output> outputs) {
                 if (counter >= 8) {
                     std::cout << (char*)buffer;
                     counter = 0;
+                    ++outChars;
                 }
             }
         }
@@ -88,14 +98,24 @@ void write(config conf, std::vector<encode_output> outputs) {
         if (counter >= 8) {
             std::cout << (char*)buffer;
             counter = 0;
+            ++outChars;
         }
     }
 
     // If we have a partial byte left over, we have to write it. We don't care
     // what the remainder of the buffer is filled with since it is after our
     // end-of-file identifier.
-    if (counter != 0)
+    if (counter != 0) {
         std::cout << (char*)buffer;
+        ++outChars;
+    }
+
+    double compressedGain = 100 - (100 * ((float)inChars/outChars));
+
+    std::cerr << "Parameter Values:" << std::endl;
+    std::cerr << "N=" << (int)conf.N << ", L=" << (int)conf.L << ", S=" << (int)conf.S << std::endl;
+    std::cerr << "Bytes in: " << inChars << ", Bytes out: " << outChars << std::endl;
+    std::cerr << "Compressed file was " << std::setprecision(3) << compressedGain << "% smaller than original." << std::endl;
 
     delete buffer;
 }
