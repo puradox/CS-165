@@ -11,8 +11,8 @@
 #include "config.hpp"
 #include "writer.hpp"
 
-using std::pow;
 using std::ostream;
+using std::pow;
 using std::string;
 using std::unordered_map;
 using std::vector;
@@ -22,6 +22,46 @@ using std::vector;
 class stree
 {
   public:
+    stree(config conf)
+        : capacity(pow(2, conf.N))
+        , max_match_length(pow(2, conf.L))
+        , max_literal_length(pow(2, conf.S))
+        , queue(new queue_node[capacity]), tree(new node[2 * capacity])
+    {
+        tree[ROOT] = node(-1, -1);
+    }
+
+    ~stree();
+
+    // Push adds a new letter to the circular queue, in preparation for
+    // consumption by pop.
+    void push(char letter);
+
+    // Push adds multiple letters sequentially.
+    void push(string letters);
+
+    // Consume a letter from the circular queue and extend the suffix tree.
+    // Returns true if anything was outputted, false otherwise.
+    bool pop();
+
+    // Flush the active suffix match. This is useful for telling the suffix tree
+    // that you reached the end of the input and want any remaining output.
+    void flush();
+
+    // Add the appropriate encode output to the list of outputs.
+    // Could either be a literal character sequence, or a relative match.
+    void output();
+
+    // Get the condensed output; multiple sequential literal outputs marged.
+    vector<encode_output> get_output();
+
+    // Pretty print please!
+    friend ostream &operator<<(ostream &os, const stree &dt);
+
+  public:
+    //
+    // Internal structs
+    //
 
     struct node
     {
@@ -50,47 +90,39 @@ class stree
 
         // Set an edge with the specified key.
         void set(char key, int node);
-    };
 
-    int edge_length(int node);
+        // Remove an edge
+        void remove(char key);
+    };
 
     struct queue_node
     {
         char letter;
-        node *suffix = nullptr;
+        int parent = -1;
     };
 
+  public:
     //
+    // Data
+    //
+
     // Config
-    //
     const int capacity;
-    const int longest_match_length;
-    const int longest_literal_length;
+    const int max_match_length;
+    const int max_literal_length;
 
-    //
     // Circular queue
-    //
-
     queue_node *queue;
     int head = 0;
     int tail = 0;
     int size = 0;
 
-    // Push adds a new letter to the queue.
-    void push(char letter);
-
-    // Push adds multiple letters to the queue.
-    void push(string letters);
-
-    // Pop processes a letter from the queue.
-    char pop();
-
-    //
-    // Suffix tree
-    //
-
     // Tree is an array of all of the nodes that compose of the suffix tree.
     node *tree;
+
+    // Have an easier time accessing nodes from the suffix tree.
+    node &operator[](int i);
+
     uint64_t letters_processed = 0;
 
     // These three values make up the active point; showing where we must start
@@ -108,42 +140,17 @@ class stree
     // Track which node needs a suffix link
     int needs_link = 0;
 
-    stree(config conf)
-        : capacity(pow(2, conf.N))
-        , longest_match_length(pow(2, conf.L)) // TODO(Sam): Use this
-        , longest_literal_length(pow(2, conf.S))
-        , queue(new queue_node[capacity])
-        , tree(new node[2 * capacity])
-    {
-        tree[ROOT] = node(-1, -1);
-    }
-
-    ~stree();
-
-    node &operator[](int i);
-
-    int new_node(int start, int end = 0);
-
-    char active_letter();
-
-    bool walk_down(int node);
-
-    void link(int node);
-
-    void extend(char letter);
-
-    // Halt execution of the suffix tree, output anything necessary.
-    void halt();
-
     // All output results from the suffix tree
     vector<encode_output> outputs;
 
-    // Add the appropriate encode output to the list of outputs.
-    // Could either be a literal character sequence, or a relative match.
-    void output(char letter = '\0');
+  private:
+    //
+    // Internal functions
+    //
 
-    // Get the condensed output; multiple sequential literal outputs marged.
-    vector<encode_output> get_output();
-
-    friend ostream& operator<<(ostream& os, const stree& dt);
+    int new_node(int start, int end = 0);
+    int edge_length(int node);
+    char active_letter();
+    bool walk_down(int node);
+    void link(int node);
 };

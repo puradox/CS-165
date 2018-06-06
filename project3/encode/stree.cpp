@@ -33,6 +33,11 @@ void stree::node::set(char key, int node)
     next.at(key) = node;
 }
 
+void stree::node::remove(char key)
+{
+    next.erase(key);
+}
+
 stree::node &stree::operator[](int i)
 {
     return tree[i];
@@ -53,12 +58,12 @@ void stree::push(char letter)
         throw overflow_error("stree::push overflow");
 
     // Clean old suffixes from the suffix tree before overriding
-    //if (queue[head].suffix != nullptr)
-    //delete_node(queue[head].suffix);
+    if (queue[head].parent != -1)
+        tree[queue[head].parent].remove(queue[head].letter);
 
     // Add the new value to the queue
     queue[head].letter = letter;
-    queue[head].suffix = 0;
+    queue[head].parent = -1;
     head = (head + 1) % capacity;
     size++;
 }
@@ -69,25 +74,9 @@ void stree::push(string letters)
         push(letter);
 }
 
-char stree::pop()
-{
-    // Check for underflow
-    if (size == 0)
-        throw underflow_error("stree::pop underflow");
-
-    // Process the current character in the queue
-    char letter = queue[tail].letter;
-    tail = (tail + 1) % capacity;
-    size--;
-
-    extend(letter);
-
-    return letter;
-}
-
 int stree::new_node(int start, int end)
 {
-    int last_added = count++;
+    int last_added = count++ % (2 * capacity);
     tree[last_added] = node(start, end);
     return last_added;
 }
@@ -115,10 +104,27 @@ bool stree::walk_down(int node)
     return true;
 }
 
-void stree::extend(char letter)
+bool stree::pop()
 {
-    int pos = tail - 1;
-    bool has_outputted_already = false;
+    //
+    // Pop from the circular queue
+    //
+
+    // Check for underflow
+    if (size == 0)
+        throw underflow_error("stree::pop underflow");
+
+    // Process the current character in the queue
+    int pos = tail;
+    char letter = queue[tail].letter;
+    tail = (tail + 1) % capacity;
+    size--;
+
+    //
+    // Update the suffix tree
+    //
+
+    bool has_outputted = false;
 
     needs_link = 0;
     letters_processed++;
@@ -145,7 +151,8 @@ void stree::extend(char letter)
             // When the final suffix we need to insert is found to exist in the
             // tree already, the tree itself is not changed at all (we only
             // update the active point and remainder)
-            if (queue[tree[next].begin + active_length].letter == letter)
+            if (queue[tree[next].begin + active_length].letter == letter &&
+                remainder <= max_match_length)
             {
                 active_length++;
 
@@ -163,6 +170,7 @@ void stree::extend(char letter)
 
             int split = new_node(pos - active_length, pos);
             tree[active_node].set(active_letter(), split);
+            queue[pos - active_length].parent = active_node;
 
             int leaf = new_node(pos);
             tree[split].add(letter, leaf);
@@ -176,10 +184,10 @@ void stree::extend(char letter)
             // through a suffix link.
             link(split);
 
-            if (!has_outputted_already)
+            if (!has_outputted)
             {
                 output();
-                has_outputted_already = true;
+                has_outputted = true;
             }
         }
         else
@@ -187,9 +195,11 @@ void stree::extend(char letter)
             // Otherwise, there is no edge with the matching letter
             int leaf = new_node(pos);
             tree[active_node].add(letter, leaf);
+            queue[pos].parent = active_node;
             link(active_node); // See Rule 2 above
 
-            output(letter);
+            output();
+            has_outputted = true;
         }
 
         remainder--;
@@ -217,18 +227,49 @@ void stree::extend(char letter)
             active_node = tree[active_node].suffix_link;
         }
     }
+
+    return has_outputted;
 }
 
-void stree::halt()
+// Almost identitical to stree::output, but +1 to the match length.
+void stree::flush()
 {
-}
+    int pos = tail - 1;
+    if (pos < 0)
+        pos += capacity;
 
-void stree::output(char letter)
-{
-    if (active_length == 0)
+    if (remainder < 0)
+        throw "remainder negative?!";
+    else if (remainder == 0)
+        return;
+    else if (remainder == 1)
+        outputs.push_back(encode_output{0, 1, string(1, queue[pos].letter)});
+    else
     {
-        outputs.push_back(encode_output{0, 1, string(1, letter)});
+        int offset = tail - remainder;
+        if (offset < 0)
+            offset += capacity; // circular queue wrapping behavior
+
+        outputs.push_back(encode_output{
+            (uint16_t)remainder,
+            (uint16_t)offset,
+            ""});
     }
+}
+
+void stree::output()
+{
+    int pos = tail - 1;
+    if (pos < 0)
+        pos += capacity;
+
+    // Produce an encode_output and push it to outputs
+    if (remainder < 0)
+        throw "remainder negative?!";
+    else if (remainder == 0)
+        return;
+    else if (remainder == 1)
+        outputs.push_back(encode_output{0, 1, string(1, queue[pos].letter)});
     else
     {
         int offset = tail - remainder;
@@ -252,7 +293,7 @@ vector<encode_output> stree::get_output()
         if (out.length == 0)
         {
             // literal character
-            if (literals.size() >= (unsigned long)longest_literal_length)
+            if (literals.size() >= (unsigned long)max_literal_length)
             {
                 string letters = "";
                 for (auto literal : literals)
@@ -301,7 +342,7 @@ stree::~stree()
 
 ostream &operator<<(ostream &os, const stree &st)
 {
-    for (int i = 1; i < st.count; i++)
+    for (int i = 1; i < (2 * st.capacity) && i < st.count; i++)
     {
         stree::node n = st.tree[i];
         string letters = "";

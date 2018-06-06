@@ -7,8 +7,7 @@
 #include <iomanip>
 
 #include "config.hpp"
-#include "suffix_tree.hpp"
-#include "queue.hpp"
+#include "stree.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -24,28 +23,45 @@ int main(int argc, char *argv[])
         if (c.parse(argv[i]) != 0)
             return 22; // Invalid argument
 
-    std::ofstream out(argv[argc - 1]);
-    
+    std::ifstream is(argv[argc - 1], std::ifstream::binary);
+
+    stree st(c);
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    //
+    // Begin timing
+    //
 
-    suffix_tree t, *t0, *t1, *t2, *t3, *t4;
+    char letter;
+    int need_to_push = pow(2, c.L);
 
-    t0 = t.add('a', 0);
+    while (is)
+    {
+        // Add to lookahead
+        while (need_to_push > 0)
+        {
+            is.read(&letter, 1);
+            st.push(letter);
+            need_to_push--;
+        }
 
-    t0->append('b');
-    t1 = t.add('b', 1);
+        // Consume input until generating an output
+        bool generated_output = false;
+        while (!generated_output)
+        {
+            generated_output = st.pop();
+            need_to_push++;
+        }
+    }
 
-    t0->append('a');
-    t1->append('a');
-    t2 = t.add('a', 2);
+    // Ensure that the suffix tree has output the last item.
+    st.flush();
 
-    std::cout << t << std::endl;;
-    std::cout << *t0 << std::endl;;
-    std::cout << *t1 << std::endl;;
-    std::cout << *t2 << std::endl;;
-    //std::cout << *t3 << std::endl;;
-    //std::cout << *t4 << std::endl;;
-    
+    // Write to stderr
+    write(c, st.count, st.get_output());
+
+    //
+    // End timing
+    //
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
     std::cerr << "Compressing files took a total of " << std::setprecision(10) << time_span.count() << " seconds." << std::endl;
