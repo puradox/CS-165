@@ -3,11 +3,12 @@ LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = stree.hpp config.hpp
-OBJECTS = stree.o   config.o
+HEADERS = stree.hpp config.hpp writer.hpp
+OBJECTS = stree.o   config.o   writer.o
 
+TEST_TARGET  = test
 TEST_HEADERS = catch.hpp
-TEST_OBJECTS = catch.o   stree_tests.o
+TEST_OBJECTS = catch.o   stree_tests.o   writer_tests.o
 
 .PHONY: all
 all: debug
@@ -22,7 +23,7 @@ release: $(TARGET)
 
 .PHONY: test
 test: $(OBJECTS) $(TEST_OBJECTS)
-	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $@ -pg
+	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $(TEST_TARGET) -pg
 
 %.o: %.cpp %.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@

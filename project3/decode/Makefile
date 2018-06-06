@@ -3,24 +3,38 @@ LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = config.hpp
-OBJECTS = config.cpp main.cpp
+HEADERS = config.hpp interpreter.hpp lookback.hpp
+OBJECTS = config.o   interpreter.o   lookback.o
 
+TEST_TARGET  = test
+TEST_HEADERS = catch.hpp
+TEST_OBJECTS = catch.o   interpreter_tests.o
+
+.PHONY: all
 all: debug
 
+.PHONY: debug
 debug: CXXFLAGS += -g
 debug: $(TARGET)
 
+.PHONY: release
 release: CXXFLAGS += -O3
 release: $(TARGET)
 
-%.o: %.c $(HEADERS)
+.PHONY: test
+test: $(OBJECTS) $(TEST_OBJECTS)
+	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $(TEST_TARGET) -pg
+
+%.o: %.cpp %.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(OBJECTS) $(CXXFLAGS) $(LIBS) -o $@ -pg
+$(TARGET): $(OBJECTS) main.o
+	$(CXX) $(OBJECTS) main.o $(CXXFLAGS) $(LIBS) -o $@ -pg
 
+.PHONY: clean
 clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 	-rm -rf $(TARGET).dSYM
+	-rm -f $(TEST_TARGET)
+	-rm -rf $(TEST_TARGET).dSYM
