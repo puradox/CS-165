@@ -1,14 +1,14 @@
-TARGET = LZ.exe
+TARGET = LZ
 LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = suffix_tree.hpp queue.hpp config.hpp writer.hpp
-OBJECTS = suffix_tree.o   queue.o   config.o   writer.o
+HEADERS = stree.hpp config.hpp writer.hpp
+OBJECTS = stree.o   config.o   writer.o
 
-TEST_TARGET  = test.exe
+TEST_TARGET  = test
 TEST_HEADERS = catch.hpp
-TEST_OBJECTS = catch.o   suffix_tree_tests.o   queue_tests.o   writer_tests.o
+TEST_OBJECTS = catch.o   stree_tests.o   writer_tests.o
 
 .PHONY: all
 all: debug
@@ -36,3 +36,5 @@ clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 	-rm -rf $(TARGET).dSYM
+	-rm -f $(TEST_TARGET)
+	-rm -rf $(TEST_TARGET).dSYM

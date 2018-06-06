@@ -1,4 +1,4 @@
-TARGET = EXPAND.exe
+TARGET = EXPAND
 LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
@@ -6,7 +6,7 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 HEADERS = config.hpp interpreter.hpp lookback.hpp
 OBJECTS = config.o   interpreter.o   lookback.o
 
-TEST_TARGET  = test.exe
+TEST_TARGET  = test
 TEST_HEADERS = catch.hpp
 TEST_OBJECTS = catch.o   interpreter_tests.o
 
@@ -36,3 +36,5 @@ clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 	-rm -rf $(TARGET).dSYM
+	-rm -f $(TEST_TARGET)
+	-rm -rf $(TEST_TARGET).dSYM

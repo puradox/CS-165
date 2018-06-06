@@ -23,8 +23,8 @@ int config::parse(std::string arg)
     if (param == "N")
     {
         try {
-            this->N = std::stoi(value);
-            if (this->N < 9 || this->N > 14)
+            N = std::stoi(value);
+            if (N < 9 || N > 14)
             {
                 std::cerr << "N must be between 9 and 14, got " << value << std::endl;
                 return 22;
@@ -40,8 +40,8 @@ int config::parse(std::string arg)
     else if (param == "L")
     {
         try {
-            this->L = std::stoi(value);
-            if (this->L < 3 || this->N > 4)
+            L = std::stoi(value);
+            if (L < 3 || N > 4)
             {
                 std::cerr << "L must be between 3 and 4, got " << value << std::endl;
                 return 22;
@@ -57,8 +57,8 @@ int config::parse(std::string arg)
     else if (param == "S")
     {
         try {
-            this->S = std::stoi(value);
-            if (this->S < 1 || this->S > 5)
+            S = std::stoi(value);
+            if (S < 1 || S > 5)
             {
                 std::cerr << "S must be between 1 and 5, got " << value << std::endl;
                 return 22;
