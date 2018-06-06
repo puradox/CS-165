@@ -1,6 +1,10 @@
 .vscode
 
 # Binaries
+project.exe
+LZ.exe
+EXPAND.exe
+test.exe
 project
 LZ
 EXPAND
@@ -9,3 +13,4 @@ test
 # Debug symbols
 **.o
 **.dSYM
+**.out
