@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <chrono>
+#include <iomanip>
 
 #include "config.hpp"
 #include "suffix_tree.hpp"
@@ -23,6 +25,8 @@ int main(int argc, char *argv[])
             return 22; // Invalid argument
 
     std::ofstream out(argv[argc - 1]);
+    
+    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     suffix_tree t, *t0, *t1, *t2, *t3, *t4;
 
@@ -41,6 +45,10 @@ int main(int argc, char *argv[])
     std::cout << *t2 << std::endl;;
     //std::cout << *t3 << std::endl;;
     //std::cout << *t4 << std::endl;;
+    
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+    std::cerr << "Compressing files took a total of " << std::setprecision(10) << time_span.count() << " seconds." << std::endl;
 
     return 0;
 }

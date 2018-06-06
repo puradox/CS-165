@@ -13,5 +13,5 @@ SCENARIO("writer produces correct output", "[writer]")
     outputs.push_back(encode_output{ 0, 7, "abcdefg" });
     outputs.push_back(encode_output{ 3, 4, "" });
 
-    write(conf, outputs);
+    write(conf, 10, outputs);
 }
