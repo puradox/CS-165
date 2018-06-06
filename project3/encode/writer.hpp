@@ -1,8 +1,6 @@
 #pragma once
 
-#include <fstream>
 #include <vector>
-#include <tuple>
 #include <cinttypes>
 #include "config.hpp"
 

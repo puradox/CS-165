@@ -1,6 +1,5 @@
 #include <fstream>
 #include <vector>
-#include <tuple>
 #include <cinttypes>
 #include <bitset>
 #include "writer.hpp"
