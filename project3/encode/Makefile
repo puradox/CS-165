@@ -1,4 +1,11 @@
-TARGET = LZ
+ifdef SYSTEMROOT
+	TARGET = LZ.exe
+	TEST_TARGET = test.exe
+else
+	TARGET = LZ
+	TEST_TARGET = test
+endif
+
 LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
@@ -6,7 +13,6 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 HEADERS = stree.hpp config.hpp writer.hpp
 OBJECTS = stree.o   config.o   writer.o
 
-TEST_TARGET  = test
 TEST_HEADERS = catch.hpp
 TEST_OBJECTS = catch.o   stree_tests.o   writer_tests.o
 

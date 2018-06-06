@@ -1,12 +1,18 @@
-TARGET = EXPAND
+ifdef SYSTEMROOT
+	TARGET = EXPAND.exe
+	TEST_TARGET = test.exe
+else
+	TARGET = EXPAND
+	TEST_TARGET = test
+endif
+
 LIBS =
-CXX = g++
+CXX  = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
 HEADERS = config.hpp interpreter.hpp lookback.hpp
 OBJECTS = config.o   interpreter.o   lookback.o
 
-TEST_TARGET  = test
 TEST_HEADERS = catch.hpp
 TEST_OBJECTS = catch.o   interpreter_tests.o
 
