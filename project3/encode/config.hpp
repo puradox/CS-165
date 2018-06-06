@@ -9,13 +9,15 @@ struct config
     // Bounds: [9, 14]
     uint8_t N = 11;
 
-    // L - number of bits to encode match offset
+    // L - number of bits to encode match length
     // Bounds: [3, 4]
     uint8_t L = 4;
 
     // S - number of bits to encode length of literal string
     // Bounds: [1, 5]
     uint8_t S = 3;
+
+    config(uint8_t N, uint8_t L, uint8_t S) : N(N), L(L), S(S) {}
 
     // Prints instructions on how to use this command.
     static void usage();

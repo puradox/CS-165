@@ -10,7 +10,7 @@ void write(config conf, uint64_t inChars, std::vector<encode_output> outputs) {
     std::bitset<8> *buffer = new std::bitset<8>();
     uint64_t outChars = 0;
     uint8_t  counter  = 0; // how many bits have been written
-    
+
     // Write N, L, and S to standard output
     *buffer = std::bitset<8>(conf.N);
     std::cout << (char*)buffer;
@@ -118,4 +118,18 @@ void write(config conf, uint64_t inChars, std::vector<encode_output> outputs) {
     std::cerr << "Compressed file was " << std::setprecision(3) << compressedGain << "% smaller than original." << std::endl;
 
     delete buffer;
+}
+
+std::ostream &operator<<(std::ostream &os, const encode_output &eo)
+{
+    if (eo.length == 0)
+    {
+        // string literal
+        return os << eo.chars;
+    }
+    else
+    {
+        // match
+        return os << "(len=" << eo.length << ", offset=" << eo.offset << ")";
+    }
 }

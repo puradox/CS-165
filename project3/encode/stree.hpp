@@ -1,20 +1,28 @@
 #pragma once
 
+#include <iostream>
+
+#include <cmath>
 #include <ostream>
 #include <string>
 #include <unordered_map>
+#include <cinttypes>
+#include <vector>
+#include "config.hpp"
+#include "writer.hpp"
 
+using std::pow;
 using std::ostream;
 using std::string;
 using std::unordered_map;
+using std::vector;
 
 #define ROOT 0 // index of the root node
 
 class stree
 {
   public:
-    // There is no need to create an "edge" struct. Information about the
-    // edge is stored right in the node.
+
     struct node
     {
         // [begin, end) interval specifies the edge, by which the node is
@@ -37,8 +45,11 @@ class stree
         // Has checks if an edge exists with the specified key.
         bool has(char key);
 
-        // Add an edge with a key and a beginning/end string index.
+        // Add an edge with a key and a node index.
         void add(char key, int node);
+
+        // Set an edge with the specified key.
+        void set(char key, int node);
     };
 
     int edge_length(int node);
@@ -50,6 +61,13 @@ class stree
     };
 
     //
+    // Config
+    //
+    const int capacity;
+    const int longest_match_length;
+    const int longest_literal_length;
+
+    //
     // Circular queue
     //
 
@@ -57,7 +75,6 @@ class stree
     int head = 0;
     int tail = 0;
     int size = 0;
-    int capacity;
 
     // Push adds a new letter to the queue.
     void push(char letter);
@@ -74,6 +91,7 @@ class stree
 
     // Tree is an array of all of the nodes that compose of the suffix tree.
     node *tree;
+    uint64_t letters_processed = 0;
 
     // These three values make up the active point; showing where we must start
     // inserting a new suffix.
@@ -90,9 +108,11 @@ class stree
     // Track which node needs a suffix link
     int needs_link = 0;
 
-    stree(int capacity)
-        : queue(new queue_node[capacity])
-        , capacity(capacity)
+    stree(config conf)
+        : capacity(pow(2, conf.N))
+        , longest_match_length(pow(2, conf.L)) // TODO(Sam): Use this
+        , longest_literal_length(pow(2, conf.S))
+        , queue(new queue_node[capacity])
         , tree(new node[2 * capacity])
     {
         tree[ROOT] = node(-1, -1);
@@ -111,6 +131,19 @@ class stree
     void link(int node);
 
     void extend(char letter);
+
+    // Halt execution of the suffix tree, output anything necessary.
+    void halt();
+
+    // All output results from the suffix tree
+    vector<encode_output> outputs;
+
+    // Add the appropriate encode output to the list of outputs.
+    // Could either be a literal character sequence, or a relative match.
+    void output(char letter = '\0');
+
+    // Get the condensed output; multiple sequential literal outputs marged.
+    vector<encode_output> get_output();
 
     friend ostream& operator<<(ostream& os, const stree& dt);
 };

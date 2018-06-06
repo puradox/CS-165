@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
+#include <cinttypes>
 #include "stree.hpp"
 
 using std::endl;
@@ -21,7 +22,15 @@ bool stree::node::has(char key)
 
 void stree::node::add(char key, int node)
 {
+    if (has(key))
+        throw "already exists!";
+
     next.insert({key, node});
+}
+
+void stree::node::set(char key, int node)
+{
+    next.at(key) = node;
 }
 
 stree::node &stree::operator[](int i)
@@ -88,6 +97,13 @@ char stree::active_letter()
     return queue[active_edge].letter;
 }
 
+void stree::link(int node)
+{
+    if (needs_link)
+        tree[needs_link].suffix_link = node;
+    needs_link = node;
+}
+
 bool stree::walk_down(int node)
 {
     if (active_length < edge_length(node))
@@ -99,17 +115,13 @@ bool stree::walk_down(int node)
     return true;
 }
 
-void stree::link(int node)
-{
-    if (needs_link)
-        tree[needs_link].suffix_link = node;
-    needs_link = node;
-}
-
 void stree::extend(char letter)
 {
     int pos = tail - 1;
+    bool has_outputted_already = false;
+
     needs_link = 0;
+    letters_processed++;
     remainder++;
 
     while (remainder > 0)
@@ -149,8 +161,8 @@ void stree::extend(char letter)
                 break;
             }
 
-            int split = new_node(tree[next].begin, tree[next].begin + active_length);
-            tree[active_node].add(active_letter(), split);
+            int split = new_node(pos - active_length, pos);
+            tree[active_node].set(active_letter(), split);
 
             int leaf = new_node(pos);
             tree[split].add(letter, leaf);
@@ -163,6 +175,12 @@ void stree::extend(char letter)
             // current step, then we link the previous SUCH node with THIS one
             // through a suffix link.
             link(split);
+
+            if (!has_outputted_already)
+            {
+                output();
+                has_outputted_already = true;
+            }
         }
         else
         {
@@ -170,30 +188,111 @@ void stree::extend(char letter)
             int leaf = new_node(pos);
             tree[active_node].add(letter, leaf);
             link(active_node); // See Rule 2 above
+
+            output(letter);
         }
 
         remainder--;
 
-        // Rule 1:
-        // If after an insertion from the active node = root and the active
-        // length is greater than 0, then:
-        //   1. active node is not changed
-        //   2. active length is decremented
-        //   3. active edge is shifted right (to the first character of the next
-        //      suffix we must insert)
         if (active_node == ROOT && active_length > 0)
         {
+            // Rule 1:
+            // If after an insertion from the active node = root and the active
+            // length is greater than 0, then:
+            //   1. active node is not changed
+            //   2. active length is decremented
+            //   3. active edge is shifted right (to the first character of the
+            //      next suffix we must insert)
             active_length--;
             active_edge = pos - remainder + 1;
         }
-
-        // Rule 3:
-        // After an insert from the active node which is not the root node, we
-        // must follow the suffix link and set the active node to the node it
-        // points to. If there is no a suffix link, set the active node to the
-        // root node. Either way, active edge and active length stay unchanged.
-        active_node = tree[active_node].suffix_link;
+        else
+        {
+            // Rule 3:
+            // After an insert from the active node which is not the root node,
+            // we must follow the suffix link and set the active node to the
+            // node it points to. If there is no a suffix link, set the active
+            // node to the root node. Either way, active edge and active length
+            // stay unchanged.
+            active_node = tree[active_node].suffix_link;
+        }
     }
+}
+
+void stree::halt()
+{
+}
+
+void stree::output(char letter)
+{
+    int pos = tail - 1;
+
+    if (active_length == 0)
+    {
+        outputs.push_back(encode_output{0, 1, string(1, letter)});
+    }
+    else
+    {
+        int offset = pos - active_length;
+        if (offset < 0)
+            offset += capacity; // circular queue wrapping behavior
+
+        outputs.push_back(encode_output{
+            (uint16_t)active_length,
+            (uint16_t)offset,
+            ""});
+    }
+}
+
+vector<encode_output> stree::get_output()
+{
+    vector<encode_output> result;
+    vector<encode_output> literals;
+
+    for (auto out : outputs)
+    {
+        if (out.length == 0)
+        {
+            // literal character
+            if (literals.size() >= (unsigned long)longest_literal_length)
+            {
+                string letters = "";
+                for (auto literal : literals)
+                    letters.append(literal.chars);
+
+                result.push_back(encode_output{0, (uint16_t)literals.size(), letters});
+                literals.clear();
+            }
+
+            literals.push_back(out);
+        }
+        else
+        {
+            if (literals.size() > 0)
+            {
+                string letters;
+                for (auto literal : literals)
+                    letters.append(literal.chars);
+
+                result.push_back(encode_output{0, (uint16_t)literals.size(), letters});
+                literals.clear();
+            }
+
+            result.push_back(out);
+        }
+    }
+
+    if (literals.size() > 0)
+    {
+        string letters;
+        for (auto literal : literals)
+            letters.append(literal.chars);
+
+        result.push_back(encode_output{0, (uint16_t)literals.size(), letters});
+        literals.clear();
+    }
+
+    return result;
 }
 
 stree::~stree()
@@ -207,7 +306,12 @@ ostream &operator<<(ostream &os, const stree &st)
     for (int i = 1; i < st.count; i++)
     {
         stree::node n = st.tree[i];
-        os << i << ": [" << n.begin << ", " << n.end
+        string letters = "";
+        int end = n.end == 0 ? st.tail : n.end;
+        for (int j = n.begin; j < end; j++)
+            letters.append(1, st.queue[j].letter);
+
+        os << i << ": " << letters << " [" << n.begin << ", " << n.end
            << ") -> " << n.suffix_link;
 
         if (n.next.empty())
