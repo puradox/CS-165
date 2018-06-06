@@ -10,7 +10,7 @@ int readInput(std::istream& in)
     config c;
     std::string line;
 
-    std::cout << c << std::endl;
+    std::cerr << c << std::endl;
     in >> line;
     std::cout << line << std::endl;
 

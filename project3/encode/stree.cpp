@@ -240,9 +240,9 @@ void stree::flush()
 
     if (remainder < 0)
         throw "remainder negative?!";
-    else if (remainder == 0)
-        return;
     else if (remainder == 1)
+        return;
+    else if (remainder == 2)
         outputs.push_back(encode_output{0, 1, string(1, queue[pos].letter)});
     else
     {

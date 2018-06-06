@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     while (is)
     {
         // Add to lookahead
-        while (need_to_push > 0)
+        while (need_to_push > 0 && is)
         {
             is.read(&letter, 1);
             st.push(letter);
@@ -46,15 +46,23 @@ int main(int argc, char *argv[])
 
         // Consume input until generating an output
         bool generated_output = false;
-        while (!generated_output)
+        while (!generated_output && st.size > 0)
         {
             generated_output = st.pop();
             need_to_push++;
         }
     }
 
+    // Consume the rest
+    while (st.size > 0)
+        st.pop();
+
     // Ensure that the suffix tree has output the last item.
     st.flush();
+
+    auto out = st.get_output();
+    for (auto o : out)
+        std::cerr << o << std::endl;
 
     // Write to stderr
     write(c, st.count, st.get_output());
