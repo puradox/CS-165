@@ -1,22 +1,21 @@
-#include <fstream>
+#include <iostream>
 #include <vector>
 #include <cinttypes>
 #include <bitset>
 #include "writer.hpp"
 #include "config.hpp"
 
-void write(config conf, std::vector<encode_output> outputs, std::string filename) {
-    std::ofstream file(filename + ".out");
+void write(config conf, std::vector<encode_output> outputs) {
     std::bitset<8> *buffer = new std::bitset<8>();
     uint8_t counter = 0; // how many bits have been written
     
-    // Write N, L, and S to the file
+    // Write N, L, and S to standard output
     *buffer = std::bitset<8>(conf.N);
-    file.write((char*)buffer, 1);
+    std::cout << (char*)buffer;
     *buffer = std::bitset<8>(conf.L);
-    file.write((char*)buffer, 1);
+    std::cout << (char*)buffer;
     *buffer = std::bitset<8>(conf.S);
-    file.write((char*)buffer, 1);
+    std::cout << (char*)buffer;
 
     for (encode_output out : outputs) {
         if (out.length == 0) {
@@ -25,7 +24,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
                 buffer->set(7 - counter, 0);
                 ++counter;
                 if (counter >= 8) {
-                    file.write((char*)buffer, 1);
+                    std::cout << (char*)buffer;
                     counter = 0;
                 }
             }
@@ -37,7 +36,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
                 buffer->set(7 - counter, string_length[4 - (strlen_offset + i)]);
                 ++counter;
                 if (counter >= 8) {
-                    file.write((char*)buffer, 1);
+                    std::cout << (char*)buffer;
                     counter = 0;
                 }
             }
@@ -49,7 +48,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
                     buffer->set(7 - counter, char_buffer[7 - i]);
                     ++counter;
                     if (counter >= 8) {
-                        file.write((char*)buffer, 1);
+                        std::cout << (char*)buffer;
                         counter = 0;
                     }
                 }
@@ -63,7 +62,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
                 buffer->set(7 - counter, length[3 - (length_offset + i)]);
                 ++counter;
                 if (counter >= 8) {
-                    file.write((char*)buffer, 1);
+                    std::cout << (char*)buffer;
                     counter = 0;
                 }
             }
@@ -75,7 +74,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
                 buffer->set(7 - counter, offset[13 - (offset_offset + i)]);
                 ++counter;
                 if (counter >= 8) {
-                    file.write((char*)buffer, 1);
+                    std::cout << (char*)buffer;
                     counter = 0;
                 }
             }
@@ -87,7 +86,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
         buffer->set(7 - counter, 0);
         ++counter;
         if (counter >= 8) {
-            file.write((char*)buffer, 1);
+            std::cout << (char*)buffer;
             counter = 0;
         }
     }
@@ -96,7 +95,7 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
     // what the remainder of the buffer is filled with since it is after our
     // end-of-file identifier.
     if (counter != 0)
-        file.write((char*)buffer, 1);
+        std::cout << (char*)buffer;
 
     delete buffer;
 }

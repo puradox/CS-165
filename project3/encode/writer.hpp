@@ -12,4 +12,4 @@ struct encode_output {
 
 // Convert an array of tokens into bits and write those bits out to the 
 // specified files.
-void write(config conf, std::vector<encode_output> outputs, std::string filename);
+void write(config conf, std::vector<encode_output> outputs);
