@@ -3,11 +3,11 @@ LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = suffix_tree.hpp queue.hpp config.hpp
-OBJECTS = suffix_tree.o   queue.o   config.o
+HEADERS = stree.hpp config.hpp
+OBJECTS = stree.o   config.o
 
 TEST_HEADERS = catch.hpp
-TEST_OBJECTS = catch.o   suffix_tree_tests.o queue_tests.o
+TEST_OBJECTS = catch.o   stree_tests.o
 
 .PHONY: all
 all: debug
@@ -35,3 +35,5 @@ clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 	-rm -rf $(TARGET).dSYM
+	-rm -f $(TEST_TARGET)
+	-rm -rf $(TEST_TARGET).dSYM
