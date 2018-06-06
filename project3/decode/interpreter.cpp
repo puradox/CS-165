@@ -84,13 +84,30 @@ void interpret(std::string filename) {
                         ++counter;
                     }
                     output_file.write((char*)output_buffer, 1);
-                    lookback.push((char*)output_buffer);
+                    lookback.add((char*)output_buffer);
                 }
             }
         }
         else { // We want to get match offset next
             uint8_t match_length = length.to_ulong + 1;
-            // TODO: match previous output
+            std::bitset<14> offset = std::bitset<14>();
+            uint8_t offset_offset = 14 - N;
+            for (uint8_t i = 0; i < N; i++) {
+                if (counter >= 8) { // We need to read a new byte
+                    input_file.get(char_buffer);
+                    bit_buffer = std::bitset<8>(char_buffer);
+                    counter = 0;
+                }
+                offset.set(offset_offset + i, bit_buffer[counter]);
+                ++counter;
+            }
+
+            // Now we read back from our internal buffer
+            for (uint8_t i = 0; i < match_length; i++) {
+                char *toAdd = lookback.back(offset.to_ulong());
+                output_file.write(toAdd, 1);
+                lookback.add(toAdd);
+            }
         }
     }
 }
