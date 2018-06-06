@@ -58,8 +58,8 @@ void write(config conf, std::vector<encode_output> outputs, std::string filename
         }
         else {
             // Write the match length L
-            std::bitset<5> length(out.length);
-            uint8_t length_offset = 5 - conf.L;
+            std::bitset<4> length(out.length - 1);
+            uint8_t length_offset = 4 - conf.L;
             for (uint8_t i = 0; i < conf.L; i++) {
                 buffer->set(counter, length[length_offset + i]);
                 ++counter;
