@@ -110,7 +110,7 @@ void write(config conf, uint64_t inChars, std::vector<encode_output> outputs) {
         ++outChars;
     }
 
-    double compressedGain = 100 - (100 * ((float)inChars/outChars));
+    double compressedGain = 100 - (100 * ((double)outChars/inChars));
 
     std::cerr << "Parameter Values:" << std::endl;
     std::cerr << "N=" << (int)conf.N << ", L=" << (int)conf.L << ", S=" << (int)conf.S << std::endl;

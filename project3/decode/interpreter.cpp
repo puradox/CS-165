@@ -125,7 +125,7 @@ void interpret(std::string filename) {
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
 
-    double compressedGain = 100 - (100 * ((float)inChars/outChars));
+    double compressedGain = 100 - (100 * ((double)inChars/outChars));
 
     std::cerr << "Parameter Values:" << std::endl;
     std::cerr << "N=" << (int)N << ", L=" << (int)L << ", S=" << (int)S << std::endl;
