@@ -225,20 +225,18 @@ void stree::halt()
 
 void stree::output(char letter)
 {
-    int pos = tail - 1;
-
     if (active_length == 0)
     {
         outputs.push_back(encode_output{0, 1, string(1, letter)});
     }
     else
     {
-        int offset = pos - active_length;
+        int offset = tail - remainder;
         if (offset < 0)
             offset += capacity; // circular queue wrapping behavior
 
         outputs.push_back(encode_output{
-            (uint16_t)active_length,
+            (uint16_t)(remainder - 1),
             (uint16_t)offset,
             ""});
     }
