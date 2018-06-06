@@ -12,7 +12,7 @@ void LookbackBuffer::add(char *value) {
 }
 
 char* LookbackBuffer::back(uint8_t amount) {
-    uint8_t index = head - amount;
+    int8_t index = head - amount;
     if (index < 0)
         index += size;
     

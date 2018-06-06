@@ -1,13 +1,14 @@
-TARGET = LZ
+TARGET = LZ.exe
 LIBS =
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-HEADERS = suffix_tree.hpp queue.hpp config.hpp
-OBJECTS = suffix_tree.o   queue.o   config.o
+HEADERS = suffix_tree.hpp queue.hpp config.hpp writer.hpp
+OBJECTS = suffix_tree.o   queue.o   config.o   writer.o
 
+TEST_TARGET  = test.exe
 TEST_HEADERS = catch.hpp
-TEST_OBJECTS = catch.o   suffix_tree_tests.o queue_tests.o
+TEST_OBJECTS = catch.o   suffix_tree_tests.o   queue_tests.o   writer_tests.o
 
 .PHONY: all
 all: debug
@@ -22,7 +23,7 @@ release: $(TARGET)
 
 .PHONY: test
 test: $(OBJECTS) $(TEST_OBJECTS)
-	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $@ -pg
+	$(CXX) $(OBJECTS) $(TEST_OBJECTS) $(CXXFLAGS) $(LIBS) -o $(TEST_TARGET) -pg
 
 %.o: %.cpp %.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
